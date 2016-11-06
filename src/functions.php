@@ -10,7 +10,7 @@ function once($callback)
 
     $backtrace = new Backtrace($trace);
 
-    if (!$backtrace->hasObject()) {
+    if (! $backtrace->hasObject()) {
         throw new Exception('Cannot use `once` outside a class');
     }
 
@@ -18,7 +18,7 @@ function once($callback)
 
     $hash = $backtrace->getArgumentHash();
 
-    if (!isset($object->__memoized[$backtrace->getFunctionName()][$hash])) {
+    if (! isset($object->__memoized[$backtrace->getFunctionName()][$hash])) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
         $object->__memoized[$backtrace->getFunctionName()][$hash] = $result;

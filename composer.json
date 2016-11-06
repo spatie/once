@@ -1,6 +1,6 @@
 {
     "name": "spatie/once",
-    "description": "Some magic memoization functions",
+    "description": "A magic memoization function",
     "keywords": [
         "spatie",
         "once"

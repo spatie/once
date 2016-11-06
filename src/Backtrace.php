@@ -3,7 +3,6 @@
 namespace Spatie\Once;
 
 class Backtrace
-
 {
     /** @var array */
     public $trace;
@@ -43,9 +42,14 @@ class Backtrace
         return isset($this->trace['object']);
     }
 
-    public function getHash()
+    public function getCodeLocationHash()
     {
-        $normalizedArguments = array_map(function($argument) {
+        return md5(serialize([$this->getFile().$this->getLine()]));
+    }
+
+    public function getArgumentHash()
+    {
+        $normalizedArguments = array_map(function ($argument) {
             return is_object($argument) ? spl_object_hash($argument) : $argument;
         }, $this->getArguments());
 

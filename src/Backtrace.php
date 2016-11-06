@@ -12,42 +12,30 @@ class Backtrace
         $this->trace = $trace;
     }
 
-    public function getFile()
-    {
-        return $this->trace['file'];
-    }
-
-    public function getLine()
-    {
-        return $this->trace['line'];
-    }
-
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->trace['args'];
     }
 
-    public function getFunctionName()
+    public function getFunctionName(): string
     {
         return $this->trace['function'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getObject()
     {
         return $this->trace['object'];
     }
 
-    public function hasObject()
+    public function hasObject(): bool
     {
         return isset($this->trace['object']);
     }
 
-    public function getCodeLocationHash()
-    {
-        return md5(serialize([$this->getFile().$this->getLine()]));
-    }
-
-    public function getArgumentHash()
+    public function getArgumentHash(): string
     {
         $normalizedArguments = array_map(function ($argument) {
             return is_object($argument) ? spl_object_hash($argument) : $argument;

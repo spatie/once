@@ -13,12 +13,12 @@
 This package contains a `once` function. You can pass a `callable` to it. Here's quick example:
 
 ```php
-
-class MyClass 
+class MyClass
 {
-    function getNumber() {
-        return once(function() {
-           return rand(1,10000);
+    function getNumber()
+    {
+        return once(function () {
+            return rand(1, 10000);
         });
     }
 }
@@ -49,12 +49,12 @@ composer require spatie/once
 The `once` function accepts a `callable`.
 
 ```php
-
-class MyClass 
+class MyClass
 {
-    function getNumber() {
-        return once(function() {
-           return rand(1,10000);
+    function getNumber()
+    {
+        return once(function () {
+            return rand(1, 10000);
         });
     }
 }
@@ -64,15 +64,16 @@ No matter how many times you run `(new MyClass())->getNumber()` you'll always ge
 
 The `once` function will only run once per combination of argument values the containing method receives.
 
-```
-Class MyClass {
-   public function getNumberForLetter($letter)
-   {
-       return once(function () use ($letter) {
-           return $letter.rand(1, 10000000);
-       });
+```php
+class MyClass
+{
+    public function getNumberForLetter($letter)
+    {
+        return once(function () use ($letter) {
+            return $letter . rand(1, 10000000);
+        });
     }
-};
+}
 ```
 
 So calling `(new MyClass())->getNumberForLetter('A')` will always return the same result, but calling `(new MyClass())->getNumberForLetter('B')` will return something else.

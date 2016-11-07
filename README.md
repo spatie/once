@@ -1,5 +1,3 @@
-**WORK IN PROGRESS, DO NOT USE YET**
-
 # A magic memoization function
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/once.svg?style=flat-square)](https://packagist.org/packages/spatie/once)

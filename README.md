@@ -79,7 +79,7 @@ So calling `(new MyClass())->getNumberForLetter('A')` will always return the sam
 
 ## Behind the curtains
 
-Let's go over the code of the `once` function to learn how all this magic works.
+Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/4954c54/src/functions.php) to learn how all the magic works.
 
 In short: it will execute the given callable and save the result in a an array in the `__memoized` property of the instance `once` was called in. When we detect that `once` has already run before, we're just going to return the value stored inside the `__memoized` array instead of executing the callable again.
 

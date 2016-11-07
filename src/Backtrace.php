@@ -30,7 +30,7 @@ class Backtrace
         return $this->trace['object'];
     }
 
-    public function getArgumentHash(): string
+    public function getHash(): string
     {
         $normalizedArguments = array_map(function ($argument) {
             return is_object($argument) ? spl_object_hash($argument) : $argument;

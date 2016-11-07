@@ -14,13 +14,13 @@ function once($callback)
         throw new Exception('Cannot use `once` outside a class');
     }
 
-    $hash = $backtrace->getArgumentHash();
+    $hash = $backtrace->getHash();
 
-    if (! isset($object->__memoized[$backtrace->getFunctionName()][$hash])) {
+    if (! isset($object->__memoized[$hash])) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
-        $object->__memoized[$backtrace->getFunctionName()][$hash] = $result;
+        $object->__memoized[$hash] = $result;
     }
 
-    return $object->__memoized[$backtrace->getFunctionName()][$hash];
+    return $object->__memoized[$hash];
 }

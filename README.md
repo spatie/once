@@ -118,7 +118,7 @@ if (! isset($object->__memoized[$backtrace->getFunctionName()][$hash])) {
 
 ## Caveats
 
-- uou can only use the `once` function in non-static class methods
+- you can only use the `once` function in non-static class methods
 - if you need to serialize an object that use `once` be sure to `unset` the `__memoized` property. A perfect place for that would be [the `__sleep` magic method](http://php.net/manual/en/oop4.magic-functions.php)
 
 ## Changelog

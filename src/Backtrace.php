@@ -5,7 +5,7 @@ namespace Spatie\Once;
 class Backtrace
 {
     /** @var array */
-    public $trace;
+    protected $trace;
 
     public function __construct(array $trace)
     {

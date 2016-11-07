@@ -10,7 +10,21 @@
 [![StyleCI](https://styleci.io/repos/73020509/shield?branch=master)](https://styleci.io/repos/73020509)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/once.svg?style=flat-square)](https://packagist.org/packages/spatie/once)
 
-Description coming soon...
+This package contains a `once` function. You can pass a `callable` to it. Here's quick example:
+
+```php
+
+class MyClass 
+{
+    function getNumber() {
+        return once(function() {
+           return rand(1,10000);
+        });
+    }
+}
+```
+ 
+No matter how many times you run `(new MyClass())->getNumber()` you'll always get the same number.
 
 Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
 
@@ -32,7 +46,46 @@ composer require spatie/once
 
 ## Usage
 
-Coming soon...
+The `once` function accepts a `callable`.
+
+```php
+
+class MyClass 
+{
+    function getNumber() {
+        return once(function() {
+           return rand(1,10000);
+        });
+    }
+}
+```
+
+No matter how many times you run `(new MyClass())->getNumber()` you'll always get the same number.
+
+The `once` function will only run once per combination of argument values the containing method receives.
+
+```
+Class MyClass {
+   public function getNumberForLetter($letter)
+   {
+       return once(function () use ($letter) {
+           return $letter.rand(1, 10000000);
+       });
+    }
+};
+```
+
+So calling `(new MyClass())->getNumberForLetter('A')` will always return the same result, but calling `(new MyClass())->getNumberForLetter('B')` will return something else.
+
+
+## Behind the curtains
+
+
+
+## Caveats
+
+- uou can only use the `once` function in non-static class methods
+- if you need to serialize an object that use `once` be sure to `unset` the `__memoized` property. A perfect place for that would be [the `__sleep` magic method](http://php.net/manual/en/oop4.magic-functions.php)
 
 ## Changelog
 

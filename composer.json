@@ -3,7 +3,10 @@
     "description": "A magic memoization function",
     "keywords": [
         "spatie",
-        "once"
+        "once",
+        "callable",
+        "memozation",
+        "cache"
     ],
     "homepage": "https://github.com/spatie/once",
     "license": "MIT",

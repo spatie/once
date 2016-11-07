@@ -30,11 +30,6 @@ class Backtrace
         return $this->trace['object'];
     }
 
-    public function hasObject(): bool
-    {
-        return isset($this->trace['object']);
-    }
-
     public function getArgumentHash(): string
     {
         $normalizedArguments = array_map(function ($argument) {

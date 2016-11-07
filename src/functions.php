@@ -10,11 +10,9 @@ function once($callback)
 
     $backtrace = new Backtrace($trace);
 
-    if (! $backtrace->hasObject()) {
+    if (! $object = $backtrace->getObject()) {
         throw new Exception('Cannot use `once` outside a class');
     }
-
-    $object = $backtrace->getObject();
 
     $hash = $backtrace->getArgumentHash();
 

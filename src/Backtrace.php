@@ -36,6 +36,6 @@ class Backtrace
             return is_object($argument) ? spl_object_hash($argument) : $argument;
         }, $this->getArguments());
 
-        return md5($this->getFunctionName() . serialize($normalizedArguments));
+        return md5($this->getFunctionName().serialize($normalizedArguments));
     }
 }

@@ -110,9 +110,9 @@ $hash = $backtrace->getArgumentHash();
 Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in the `__memoized` array on the object. In the other case just return the value in the `__memoized` array (the `$callback` isn't executed). 
 
 ```php
-if (! isset($object->__memoized[$backtrace->getFunctionName()][$hash])) {
+if (! isset($object->__memoized[$hash])) {
    $result = call_user_func($callback, $backtrace->getArguments());
-   $object->__memoized[$backtrace->getFunctionName()][$hash] = $result;
+   $object->__memoized[$hash] = $result;
 }
 ```
 

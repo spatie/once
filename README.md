@@ -101,7 +101,7 @@ if (! $object = $backtrace->getObject()) {
 }
 ```
 
-Now that we're certain `once` is called within an instance of a class we're going to calculate a `hash` of the backtrace. This hash will be unique per function `once` was called in an the values of the arguments that function receives.
+Now that we're certain `once` is called within an instance of a class we're going to calculate a `hash` of the backtrace. This hash will be unique per function `once` was called in and the values of the arguments that function receives.
 
 ```php
 $hash = $backtrace->getArgumentHash();

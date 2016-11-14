@@ -16,7 +16,7 @@ function once($callback)
 
     $hash = $backtrace->getHash();
 
-    if (! isset($object->__memoized[$hash])) {
+    if (! array_key_exists($hash, $object->__memoized)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
         $object->__memoized[$hash] = $result;

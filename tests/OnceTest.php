@@ -65,10 +65,10 @@ class OnceTest extends PHPUnit_Framework_TestCase
             }
         };
 
-        $actual = $testClass->getNull();
-        $testClass->getNull();
+        $this->assertNull($testClass->getNull());
+        $this->assertNull($testClass->getNull());
+        $this->assertNull($testClass->getNull());
 
-        $this->assertNull($actual);
-        $this->assertEquals(1, $testClass->counter, 'It should call callback only once when return falsy result.');
+        $this->assertEquals(1, $testClass->counter);
     }
 }

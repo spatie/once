@@ -60,7 +60,6 @@ class OnceTest extends PHPUnit_Framework_TestCase
             {
                 return once(function () {
                     $this->counter++;
-                    return null;
                 });
             }
         };

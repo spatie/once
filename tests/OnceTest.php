@@ -2,15 +2,37 @@
 
 namespace Spatie\Once\Test;
 
-require __DIR__ . '/TestClass.php';
 use PHPUnit_Framework_TestCase;
 
 class OnceTest extends PHPUnit_Framework_TestCase
 {
+    private $counter = 0;
+    
+    private function getNull()
+    {
+        return once(function () {
+            $this->counter++;
+        });
+    }
+    
+    private function getNumber()
+    {
+        return once(function () {
+            return rand(1, 10000000);
+        });
+    }
+    
+    private function getNumberForLetter($letter)
+    {
+        return once(function () use ($letter) {
+            return $letter.rand(1, 10000000);
+        });
+    } 
+    
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()
     {
-        $testClass = new TestClass;
+        $testClass = $this;
 
         $firstResult = $testClass->getNumber();
 
@@ -25,7 +47,7 @@ class OnceTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
     {
-        $testClass = new TestClass;
+        $testClass = $this;
 
 
         foreach (range('A', 'Z') as $letter) {
@@ -41,7 +63,7 @@ class OnceTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_for_falsy_result()
     {
-        $testClass = new TestClass;
+        $testClass = $this;
           
         $this->assertNull($testClass->getNull());
         $this->assertNull($testClass->getNull());

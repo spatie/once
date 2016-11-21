@@ -1,7 +1,5 @@
 <?php
 
-namespace Spatie\Once\Test;
-
 class TestClass 
 {
     public $counter = 0;

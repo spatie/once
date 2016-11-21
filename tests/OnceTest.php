@@ -2,7 +2,7 @@
 
 namespace Spatie\Once\Test;
 
-use TestClass;
+require __DIR__ . '/TestClass.php';
 use PHPUnit_Framework_TestCase;
 
 class OnceTest extends PHPUnit_Framework_TestCase

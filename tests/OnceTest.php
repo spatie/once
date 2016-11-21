@@ -2,6 +2,7 @@
 
 namespace Spatie\Once\Test;
 
+use TestClass;
 use PHPUnit_Framework_TestCase;
 
 class OnceTest extends PHPUnit_Framework_TestCase
@@ -9,14 +10,7 @@ class OnceTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()
     {
-        $testClass = new class() {
-            public function getNumber()
-            {
-                return once(function () {
-                    return rand(1, 10000000);
-                });
-            }
-        };
+        $testClass = new TestClass;
 
         $firstResult = $testClass->getNumber();
 
@@ -31,14 +25,8 @@ class OnceTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
     {
-        $testClass = new class() {
-            public function getNumberForLetter($letter)
-            {
-                return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
-                });
-            }
-        };
+        $testClass = new TestClass;
+
 
         foreach (range('A', 'Z') as $letter) {
             $firstResult = $testClass->getNumberForLetter($letter);
@@ -53,17 +41,8 @@ class OnceTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_for_falsy_result()
     {
-        $testClass = new class() {
-            public $counter = 0;
-
-            public function getNull()
-            {
-                return once(function () {
-                    $this->counter++;
-                });
-            }
-        };
-
+        $testClass = new TestClass;
+          
         $this->assertNull($testClass->getNull());
         $this->assertNull($testClass->getNull());
         $this->assertNull($testClass->getNull());

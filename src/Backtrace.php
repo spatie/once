@@ -12,12 +12,12 @@ class Backtrace
         $this->trace = $trace;
     }
 
-    public function getArguments(): array
+    public function getArguments()
     {
         return $this->trace['args'];
     }
 
-    public function getFunctionName(): string
+    public function getFunctionName()
     {
         return $this->trace['function'];
     }
@@ -30,7 +30,7 @@ class Backtrace
         return $this->trace['object'];
     }
 
-    public function getHash(): string
+    public function getHash()
     {
         $normalizedArguments = array_map(function ($argument) {
             return is_object($argument) ? spl_object_hash($argument) : $argument;

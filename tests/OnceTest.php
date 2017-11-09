@@ -2,9 +2,9 @@
 
 namespace Spatie\Once\Test;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class OnceTest extends PHPUnit_Framework_TestCase
+class OnceTest extends TestCase
 {
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()

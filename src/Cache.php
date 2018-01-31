@@ -48,6 +48,35 @@ class Cache
      */
     public static function set($object, string $backtraceHash, $value)
     {
+        static::addDestroyHook($object);
+
         static::$values[spl_object_hash($object)][$backtraceHash] = $value;
+    }
+
+    public static function unset($objectHash)
+    {
+        unset(static::$values[$objectHash]);
+    }
+
+    protected static function addDestroyHook($object)
+    {
+        $randomPropertyName = '___once_destroy_hook';
+
+        if (isset($object->$randomPropertyName)) {
+            return;
+        }
+
+        $object->$randomPropertyName = new class($object) {
+
+            public function __construct($object)
+            {
+                $this->objectHash = spl_object_hash($object);
+            }
+
+            public function __destruct()
+            {
+                Cache::unset($this->objectHash);
+            }
+        };
     }
 }

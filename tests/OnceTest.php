@@ -79,7 +79,7 @@ class OnceTest extends TestCase
         foreach(range(1, 5) as $number) {
             $testClass = new TestClass($number);
 
-            $number = $testClass->getNumber();
+            $number = $testClass->getProtectedNumber();
 
             $this->assertNotContains($number, $previousNumbers);
 

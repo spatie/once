@@ -12,7 +12,7 @@ class TestClass
         $this->number = $number;
     }
 
-    public function getNumber()
+    public function getProtectedNumber()
     {
         return once(function () {
 

@@ -72,7 +72,6 @@ class Cache
         }
 
         $object->$randomPropertyName = new class($object) {
-
             public function __construct($object)
             {
                 $this->objectHash = spl_object_hash($object);

@@ -67,8 +67,6 @@ class MyClass
 
 So calling `(new MyClass())->getNumberForLetter('A')` will always return the same result, but calling `(new MyClass())->getNumberForLetter('B')` will return something else.
 
-**Note:** In order to use `once` on classes that have the magic method `__get` defined, you will need to either manually define the `__memoized` property on your object, or use the include `MemoizeAwareTrait.` This applies particularly to Laravel Eloquent models.
-
 ## Behind the curtains
 
 Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/4954c54/src/functions.php) to learn how all the magic works.

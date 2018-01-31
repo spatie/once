@@ -76,7 +76,7 @@ class OnceTest extends TestCase
     {
         $previousNumbers = [];
 
-        foreach(range(1, 5) as $number) {
+        foreach (range(1, 5) as $number) {
             $testClass = new TestClass($number);
 
             $number = $testClass->getProtectedNumber();

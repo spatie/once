@@ -15,9 +15,7 @@ class TestClass
     public function getProtectedNumber()
     {
         return once(function () {
-
             return $this->number;
-
         });
     }
 }

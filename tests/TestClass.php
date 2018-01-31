@@ -7,9 +7,7 @@ class TestClass
     public function getRandomNumber()
     {
         return once(function () {
-
-            return rand(1,10000000000);
-
+            return rand(1, 10000000000);
         });
     }
 }

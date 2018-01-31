@@ -76,7 +76,7 @@ class OnceTest extends TestCase
     {
         $previousRandomNumbers = [];
 
-        foreach(range(1, 5) as $i) {
+        foreach (range(1, 5) as $i) {
             $testClass = new TestClass();
 
             $randomNumber = $testClass->getRandomNumber();

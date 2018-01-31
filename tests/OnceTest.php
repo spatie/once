@@ -77,7 +77,7 @@ class OnceTest extends TestCase
         $previousNumbers = [];
 
         foreach (range(1, 5) as $number) {
-            $testClass = new TestClass($number);
+            $testClass = new TestClass();
 
             $number = $testClass->getProtectedNumber();
 
@@ -87,5 +87,21 @@ class OnceTest extends TestCase
 
             unset($testClass);
         }
+    }
+
+    /** @test */
+    public function it_will_forget_the_memoized_value_when_serialized()
+    {
+        $testClass = new TestClass();
+
+        $firstNumber = $testClass->getProtectedNumber();
+
+        $this->assertEquals($firstNumber, $testClass->getProtectedNumber());
+
+        $serialized = serialize($testClass);
+        $unserialized = unserialize($serialized);
+        unset($unserialized);
+
+        $this->assertEquals($firstNumber, $testClass->getProtectedNumber());
     }
 }

@@ -7,9 +7,9 @@ class TestClass
     /** @var int */
     protected $number;
 
-    public function __construct(int $number)
+    public function __construct()
     {
-        $this->number = $number;
+        $this->number = rand(1, 1000000);
     }
 
     public function getProtectedNumber()

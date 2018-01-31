@@ -1,6 +1,6 @@
 <?php
 
-use Spatie\Once\Purse;
+use Spatie\Once\Cache;
 use Spatie\Once\Backtrace;
 
 function once($callback)
@@ -17,13 +17,11 @@ function once($callback)
 
     $hash = $backtrace->getHash();
 
-    $cacheHit = Purse::has($object, $hash);
-
-    if (! $cacheHit) {
+    if (! Cache::has($object, $hash)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
-        Purse::set($object, $hash, $result);
+        Cache::set($object, $hash, $result);
     }
 
-    return Purse::get($object, $hash);
+    return Cache::get($object, $hash);
 }

@@ -48,7 +48,7 @@ class Cache
      */
     public static function set($object, string $backtraceHash, $value)
     {
-        static::addDestroyListener($object);
+        static::addDestroyListener($object, $backtraceHash);
 
         static::$values[spl_object_hash($object)][$backtraceHash] = $value;
     }
@@ -65,22 +65,12 @@ class Cache
 
     protected static function addDestroyListener($object)
     {
-        $randomPropertyName = '___once_destroy_listener';
+        $randomPropertyName = '___once_listener__'.rand(1, 1000000);
 
         if (isset($object->$randomPropertyName)) {
             return;
         }
 
-        $object->$randomPropertyName = new class($object) {
-            public function __construct($object)
-            {
-                $this->objectHash = spl_object_hash($object);
-            }
-
-            public function __destruct()
-            {
-                Cache::forget($this->objectHash);
-            }
-        };
+        $object->$randomPropertyName = new Listener($object);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Spatie\Once\Test;
 
+use Spatie\Once\Cache;
 use PHPUnit\Framework\TestCase;
 
 class OnceTest extends TestCase
@@ -77,9 +78,9 @@ class OnceTest extends TestCase
         $previousNumbers = [];
 
         foreach (range(1, 5) as $number) {
-            $testClass = new TestClass($number);
+            $testClass = new TestClass();
 
-            $number = $testClass->getProtectedNumber();
+            $number = $testClass->getRandomNumber();
 
             $this->assertNotContains($number, $previousNumbers);
 
@@ -87,5 +88,43 @@ class OnceTest extends TestCase
 
             unset($testClass);
         }
+    }
+
+    /** @test */
+    public function it_will_remember_the_memoized_value_when_serialized_when_called_in_the_same_request()
+    {
+        $testClass = new TestClass();
+
+        $firstNumber = $testClass->getRandomNumber();
+
+        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
+
+        $serialized = serialize($testClass);
+        $unserialized = unserialize($serialized);
+        unset($unserialized);
+
+        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
+    }
+
+    /** @test */
+    public function it_will_not_try_to_forget_something_in_the_cache_when_called_in_another_request()
+    {
+        $testClass = new TestClass();
+
+        $firstNumber = $testClass->getRandomNumber();
+
+        $objectHash = spl_object_hash($testClass);
+
+        $serialized = serialize($testClass);
+        unset($testClass);
+
+        $unserialized = unserialize($serialized);
+        $unserializedObjectHash = spl_object_hash($unserialized);
+
+        Cache::$values = [$unserializedObjectHash => ['abc' => 'dummy']];
+
+        unset($unserialized);
+
+        $this->assertArrayHasKey($unserializedObjectHash, Cache::$values);
     }
 }

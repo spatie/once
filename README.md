@@ -73,7 +73,7 @@ So calling `(new MyClass())->getNumberForLetter('A')` will always return the sam
 
 Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/4954c54/src/functions.php) to learn how all the magic works.
 
-In short: it will execute the given callable and save the result in a an array in the `__memoized` property of the instance `once` was called in. When we detect that `once` has already run before, we're just going to return the value stored inside the `__memoized` array instead of executing the callable again.
+In short: it will execute the given callable and save the result in the static `$values` property of `Spatie\Once\Cache`. When we detect that `once` has already run before, we're just going to return the value stored inside the `$values` array instead of executing the callable again.
 
 The first thing it does it calling [`debug_backtrace`](http://php.net/manual/en/function.debug-backtrace.php). We'll use the output to determine in which function and class `once` is called and to get access to the `object` that function is running in. Yeah, we're already in voodoo-land. The output of the `debug_backtrace` is passed to a new instance of `Backtrace`. That class is just a simple wrapper so we can work more easily with the backtrace.
 
@@ -99,19 +99,21 @@ Now that we're certain `once` is called within an instance of a class we're goin
 $hash = $backtrace->getArgumentHash();
 ```
 
-Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in the `__memoized` array on the object. In the other case just return the value in the `__memoized` array (the `$callback` isn't executed). 
+Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in `Spatie\Once\Cache`. In the other case just return the value from that cache (the `$callback` isn't executed). 
 
 ```php
-if (! isset($object->__memoized[$hash])) {
-   $result = call_user_func($callback, $backtrace->getArguments());
-   $object->__memoized[$hash] = $result;
+if (! Cache::has($object, $hash)) {
+    $result = call_user_func($callback, $backtrace->getArguments());
+
+    Cache::set($object, $hash, $result);
 }
+
+return Cache::get($object, $hash);
 ```
 
 ## Caveats
 
 - you can only use the `once` function in non-static class methods
-- if you need to serialize an object that uses `once` be sure to `unset` the `__memoized` property. A perfect place for that would be [the `__sleep` magic method](http://php.net/manual/en/oop4.magic-functions.php)
 
 ## Changelog
 

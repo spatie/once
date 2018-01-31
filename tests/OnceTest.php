@@ -74,16 +74,16 @@ class OnceTest extends TestCase
     /** @test */
     public function it_will_work_properly_with_unset_objects()
     {
-        $previousRandomNumbers = [];
+        $previousNumbers = [];
 
-        foreach(range(1, 5) as $i) {
-            $testClass = new TestClass();
+        foreach(range(1, 5) as $number) {
+            $testClass = new TestClass($number);
 
-            $randomNumber = $testClass->getRandomNumber();
+            $number = $testClass->getNumber();
 
-            $this->assertNotContains($randomNumber, $previousRandomNumbers);
+            $this->assertNotContains($number, $previousNumbers);
 
-            $previousRandomNumbers[] = $randomNumber;
+            $previousNumbers[] = $number;
 
             unset($testClass);
         }

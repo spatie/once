@@ -4,11 +4,19 @@ namespace Spatie\Once\Test;
 
 class TestClass
 {
-    public function getRandomNumber()
+    /** @var int */
+    protected $number;
+
+    public function __construct(int $number)
+    {
+        $this->number = $number;
+    }
+
+    public function getNumber()
     {
         return once(function () {
 
-            return rand(1,10000000000);
+            return $this->number;
 
         });
     }

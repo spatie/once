@@ -1,6 +1,10 @@
 # Changelog
 
-All Notable changes to `once` will be documented in this file
+All notable changes to `once` will be documented in this file
+
+## 2.0.0 - 2018-01-31
+
+- ditch `__memoized` in favor of `Spatie\Once\Cache`
 
 ## 1.1.0 - 2017-08-24
 

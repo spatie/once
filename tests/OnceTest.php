@@ -2,16 +2,15 @@
 
 namespace Spatie\Once\Test;
 
-use PHPUnit\Framework\TestCase;
 use Spatie\Once\Cache;
+use PHPUnit\Framework\TestCase;
 
 class OnceTest extends TestCase
 {
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()
     {
-        $testClass = new class()
-        {
+        $testClass = new class() {
             public function getNumber()
             {
                 return once(function () {
@@ -33,12 +32,11 @@ class OnceTest extends TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
     {
-        $testClass = new class()
-        {
+        $testClass = new class() {
             public function getNumberForLetter($letter)
             {
                 return once(function () use ($letter) {
-                    return $letter . rand(1, 10000000);
+                    return $letter.rand(1, 10000000);
                 });
             }
         };
@@ -56,8 +54,7 @@ class OnceTest extends TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_for_falsy_result()
     {
-        $testClass = new class()
-        {
+        $testClass = new class() {
             public $counter = 0;
 
             public function getNull()

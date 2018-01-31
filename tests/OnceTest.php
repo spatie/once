@@ -70,4 +70,22 @@ class OnceTest extends TestCase
 
         $this->assertEquals(1, $testClass->counter);
     }
+
+    /** @test */
+    public function it_will_work_properly_with_unset_objects()
+    {
+        $previousNumbers = [];
+
+        foreach (range(1, 5) as $number) {
+            $testClass = new TestClass($number);
+
+            $number = $testClass->getProtectedNumber();
+
+            $this->assertNotContains($number, $previousNumbers);
+
+            $previousNumbers[] = $number;
+
+            unset($testClass);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use Spatie\Once\Cache;
 use Spatie\Once\Backtrace;
 
 function once($callback)
@@ -16,13 +17,11 @@ function once($callback)
 
     $hash = $backtrace->getHash();
 
-    $cacheHit = isset($object->__memoized) && array_key_exists($hash, $object->__memoized);
-
-    if (! $cacheHit) {
+    if (! Cache::has($object, $hash)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
-        $object->__memoized[$hash] = $result;
+        Cache::set($object, $hash, $result);
     }
 
-    return $object->__memoized[$hash];
+    return Cache::get($object, $hash);
 }

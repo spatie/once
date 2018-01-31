@@ -48,19 +48,24 @@ class Cache
      */
     public static function set($object, string $backtraceHash, $value)
     {
-        static::addDestroyHook($object);
+        static::addDestroyListener($object);
 
         static::$values[spl_object_hash($object)][$backtraceHash] = $value;
     }
 
-    public static function unset($objectHash)
+    /**
+     * Forget the stored items for the given objectHash.
+     *
+     * @param string $objectHash
+     */
+    public static function forget(string $objectHash)
     {
         unset(static::$values[$objectHash]);
     }
 
-    protected static function addDestroyHook($object)
+    protected static function addDestroyListener($object)
     {
-        $randomPropertyName = '___once_destroy_hook';
+        $randomPropertyName = '___once_destroy_listener';
 
         if (isset($object->$randomPropertyName)) {
             return;
@@ -75,7 +80,7 @@ class Cache
 
             public function __destruct()
             {
-                Cache::unset($this->objectHash);
+                Cache::forget($this->objectHash);
             }
         };
     }

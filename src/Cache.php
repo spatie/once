@@ -63,7 +63,7 @@ class Cache
         unset(static::$values[$objectHash]);
     }
 
-    protected static function addDestroyListener($object, string $backTraceHash)
+    protected static function addDestroyListener($object)
     {
         $randomPropertyName = '___once_listener__'.rand(1, 1000000);
 

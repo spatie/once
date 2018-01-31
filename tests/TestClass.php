@@ -5,17 +5,17 @@ namespace Spatie\Once\Test;
 class TestClass
 {
     /** @var int */
-    protected $number;
+    protected $randomNumber;
 
     public function __construct()
     {
-        $this->number = rand(1, 1000000);
+        $this->randomNumber = rand(1, 1000000);
     }
 
-    public function getProtectedNumber()
+    public function getRandomNumber()
     {
         return once(function () {
-            return $this->number;
+            return $this->randomNumber;
         });
     }
 }

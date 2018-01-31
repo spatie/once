@@ -3,13 +3,15 @@
 namespace Spatie\Once\Test;
 
 use PHPUnit\Framework\TestCase;
+use Spatie\Once\Cache;
 
 class OnceTest extends TestCase
 {
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()
     {
-        $testClass = new class() {
+        $testClass = new class()
+        {
             public function getNumber()
             {
                 return once(function () {
@@ -31,11 +33,12 @@ class OnceTest extends TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
     {
-        $testClass = new class() {
+        $testClass = new class()
+        {
             public function getNumberForLetter($letter)
             {
                 return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
+                    return $letter . rand(1, 10000000);
                 });
             }
         };
@@ -53,7 +56,8 @@ class OnceTest extends TestCase
     /** @test */
     public function it_will_run_the_given_callback_only_once_for_falsy_result()
     {
-        $testClass = new class() {
+        $testClass = new class()
+        {
             public $counter = 0;
 
             public function getNull()
@@ -79,7 +83,7 @@ class OnceTest extends TestCase
         foreach (range(1, 5) as $number) {
             $testClass = new TestClass();
 
-            $number = $testClass->getProtectedNumber();
+            $number = $testClass->getRandomNumber();
 
             $this->assertNotContains($number, $previousNumbers);
 
@@ -90,18 +94,40 @@ class OnceTest extends TestCase
     }
 
     /** @test */
-    public function it_will_forget_the_memoized_value_when_serialized()
+    public function it_will_remember_the_memoized_value_when_serialized_when_called_in_the_same_request()
     {
         $testClass = new TestClass();
 
-        $firstNumber = $testClass->getProtectedNumber();
+        $firstNumber = $testClass->getRandomNumber();
 
-        $this->assertEquals($firstNumber, $testClass->getProtectedNumber());
+        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
 
         $serialized = serialize($testClass);
         $unserialized = unserialize($serialized);
         unset($unserialized);
 
-        $this->assertEquals($firstNumber, $testClass->getProtectedNumber());
+        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
+    }
+
+    /** @test */
+    public function it_will_not_try_to_forget_something_in_the_cache_when_called_in_another_request()
+    {
+        $testClass = new TestClass();
+
+        $firstNumber = $testClass->getRandomNumber();
+
+        $objectHash = spl_object_hash($testClass);
+
+        $serialized = serialize($testClass);
+        unset($testClass);
+
+        $unserialized = unserialize($serialized);
+        $unserializedObjectHash = spl_object_hash($unserialized);
+
+        Cache::$values = [$unserializedObjectHash => ['abc' => 'dummy']];
+
+        unset($unserialized);
+
+        $this->assertArrayHasKey($unserializedObjectHash, Cache::$values);
     }
 }

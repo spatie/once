@@ -127,4 +127,50 @@ class OnceTest extends TestCase
 
         $this->assertArrayHasKey($unserializedObjectHash, Cache::$values);
     }
+
+    /** @test */
+    public function it_will_run_callback_once_on_static_method()
+    {
+        $object = new class() {
+            public static function getNumber()
+            {
+                return once(function () {
+                    return rand(1, 10000000);
+                });
+            }
+        };
+        $class = get_class($object);
+
+        $firstResult = $class::getNumber();
+
+        $this->assertGreaterThanOrEqual(1, $firstResult);
+        $this->assertLessThanOrEqual(10000000, $firstResult);
+
+        foreach (range(1, 100) as $i) {
+            $this->assertEquals($firstResult, $class::getNumber());
+        }
+    }
+
+    /** @test */
+    public function it_will_run_callback_once_on_static_method_per_variation_arguments_in_use()
+    {
+        $object = new class() {
+            public static function getNumberForLetter($letter)
+            {
+                return once(function () use ($letter) {
+                    return $letter.rand(1, 10000000);
+                });
+            }
+        };
+        $class = get_class($object);
+
+        foreach (range('A', 'Z') as $letter) {
+            $firstResult = $class::getNumberForLetter($letter);
+            $this->assertStringStartsWith($letter, $firstResult);
+
+            foreach (range(1, 100) as $i) {
+                $this->assertEquals($firstResult, $class::getNumberForLetter($letter));
+            }
+        }
+    }
 }

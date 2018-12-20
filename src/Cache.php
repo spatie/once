@@ -17,7 +17,7 @@ class Cache
      */
     public static function has($object, string $backtraceHash): bool
     {
-        $objectHash = spl_object_hash($object);
+        $objectHash = static::objectHash($object);
 
         if (! isset(static::$values[$objectHash])) {
             return false;
@@ -36,7 +36,7 @@ class Cache
      */
     public static function get($object, string $backtraceHash)
     {
-        return static::$values[spl_object_hash($object)][$backtraceHash];
+        return static::$values[static::objectHash($object)][$backtraceHash];
     }
 
     /**
@@ -50,7 +50,7 @@ class Cache
     {
         static::addDestroyListener($object, $backtraceHash);
 
-        static::$values[spl_object_hash($object)][$backtraceHash] = $value;
+        static::$values[static::objectHash($object)][$backtraceHash] = $value;
     }
 
     /**
@@ -63,8 +63,17 @@ class Cache
         unset(static::$values[$objectHash]);
     }
 
+    private static function objectHash($object) : string
+    {
+        return is_string($object) ? $object : spl_object_hash($object);
+    }
+
     protected static function addDestroyListener($object)
     {
+        if (is_string($object)) {
+            return;
+        }
+
         $randomPropertyName = '___once_listener__'.rand(1, 1000000);
 
         if (isset($object->$randomPropertyName)) {

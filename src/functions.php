@@ -11,9 +11,7 @@ function once($callback)
 
     $backtrace = new Backtrace($trace);
 
-    if (! $object = $backtrace->getObject()) {
-        throw new Exception('Cannot use `once` outside a non-static method of a class');
-    }
+    $object = $backtrace->getObject();
 
     $hash = $backtrace->getHash();
 

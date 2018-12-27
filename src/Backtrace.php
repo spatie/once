@@ -27,7 +27,7 @@ class Backtrace
      */
     public function getObject()
     {
-        return $this->trace['object'];
+        return $this->staticCall() ? $this->trace['class'] : $this->trace['object'];
     }
 
     public function getHash(): string
@@ -37,5 +37,10 @@ class Backtrace
         }, $this->getArguments());
 
         return md5($this->getFunctionName().serialize($normalizedArguments));
+    }
+
+    protected function staticCall()
+    {
+        return $this->trace['type'] == '::';
     }
 }

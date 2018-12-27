@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.0.2 - 2018-12-27
+
+- add ability to use `once` in static functions
+
 ## 2.0.1 - 2018-01-31
 
 - improvements around serialization

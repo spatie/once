@@ -76,7 +76,7 @@ Let's go over [the code of the `once` function](https://github.com/spatie/once/b
 
 In short: it will execute the given callable and save the result in the static `$values` property of `Spatie\Once\Cache`. When we detect that `once` has already run before, we're just going to return the value stored inside the `$values` array instead of executing the callable again.
 
-The first thing it does it calling [`debug_backtrace`](http://php.net/manual/en/function.debug-backtrace.php). We'll use the output to determine in which function and class `once` is called and to get access to the `object` that function is running in. Yeah, we're already in voodoo-land. The output of the `debug_backtrace` is passed to a new instance of `Backtrace`. That class is just a simple wrapper so we can work more easily with the backtrace.
+The first thing it does is calling [`debug_backtrace`](http://php.net/manual/en/function.debug-backtrace.php). We'll use the output to determine in which function and class `once` is called and to get access to the `object` that function is running in. Yeah, we're already in voodoo-land. The output of the `debug_backtrace` is passed to a new instance of `Backtrace`. That class is just a simple wrapper so we can work more easily with the backtrace.
 
 ```php
 $trace = debug_backtrace(

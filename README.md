@@ -12,7 +12,7 @@ This package contains a `once` function. You can pass a `callable` to it. Here's
 ```php
 class MyClass
 {
-    function getNumber()
+    public function getNumber()
     {
         return once(function () {
             return rand(1, 10000);
@@ -20,7 +20,7 @@ class MyClass
     }
 }
 ```
- 
+
 No matter how many times you run `(new MyClass())->getNumber()` inside the same request  you'll always get the same number.
 
 Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
@@ -40,7 +40,7 @@ The `once` function accepts a `callable`.
 ```php
 class MyClass
 {
-    function getNumber()
+    public function getNumber()
     {
         return once(function () {
             return rand(1, 10000);
@@ -56,7 +56,10 @@ The `once` function will only run once per combination of argument values the co
 ```php
 class MyClass
 {
-    public function getNumberForLetter($letter)
+    /**
+     * It also works in static context!
+     */
+    public static function getNumberForLetter($letter)
     {
         return once(function () use ($letter) {
             return $letter . rand(1, 10000000);
@@ -65,11 +68,11 @@ class MyClass
 }
 ```
 
-So calling `(new MyClass())->getNumberForLetter('A')` will always return the same result, but calling `(new MyClass())->getNumberForLetter('B')` will return something else.
+So calling `MyClass::getNumberForLetter('A')` will always return the same result, but calling `MyClass::getNumberForLetter('B')` will return something else.
 
 ## Behind the curtains
 
-Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/4954c54/src/functions.php) to learn how all the magic works.
+Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/0dbfc37/src/functions.php) to learn how all the magic works.
 
 In short: it will execute the given callable and save the result in the static `$values` property of `Spatie\Once\Cache`. When we detect that `once` has already run before, we're just going to return the value stored inside the `$values` array instead of executing the callable again.
 
@@ -81,23 +84,17 @@ $trace = debug_backtrace(
 )[1];
 
 $backtrace = new Backtrace($trace);
+
+$object = $backtrace->getObject();
 ```
 
-Next, we're going to check if `once` was called from within an object. If it was called from a static method or outside a class, we just bail out.
+Next, we calculate a `hash` of the backtrace. This hash will be unique per function `once` was called in and the values of the arguments that function receives.
 
 ```php
-if (! $object = $backtrace->getObject()) {
-   throw new Exception('Cannot use `once` outside a class');
-}
+$hash = $backtrace->getHash();
 ```
 
-Now that we're certain `once` is called within an instance of a class we're going to calculate a `hash` of the backtrace. This hash will be unique per function `once` was called in and the values of the arguments that function receives.
-
-```php
-$hash = $backtrace->getArgumentHash();
-```
-
-Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in `Spatie\Once\Cache`. In the other case just return the value from that cache (the `$callback` isn't executed). 
+Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in `Spatie\Once\Cache`. In the other case just return the value from that cache (the `$callback` isn't executed).
 
 ```php
 if (! Cache::has($object, $hash)) {
@@ -108,10 +105,6 @@ if (! Cache::has($object, $hash)) {
 
 return Cache::get($object, $hash);
 ```
-
-## Caveats
-
-- you can only use the `once` function in non-static class methods
 
 ## Changelog
 
@@ -150,7 +143,7 @@ Credit for the idea of the `once` function goes to [Taylor Otwell](https://twitt
 
 Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
 
-Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie). 
+Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie).
 All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
 
 ## License

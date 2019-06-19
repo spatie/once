@@ -67,7 +67,7 @@ class Cache
     }
 
     /**
-     * Flush the entire cache
+     * Flush the entire cache.
      */
     public static function flush()
     {

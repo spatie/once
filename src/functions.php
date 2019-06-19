@@ -15,6 +15,10 @@ function once($callback)
 
     $hash = $backtrace->getHash();
 
+    if (! Cache::isEnabled()) {
+        return call_user_func($callback, $backtrace->getArguments());
+    }
+
     if (! Cache::has($object, $hash)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 

@@ -70,6 +70,28 @@ class MyClass
 
 So calling `MyClass::getNumberForLetter('A')` will always return the same result, but calling `MyClass::getNumberForLetter('B')` will return something else.
 
+### Flushing the cache
+
+To flush the entire cache you can call:
+
+```php
+Spatie\Once\Cache::flush();
+```
+
+### Disabling the cache
+
+In your test you probably don't want to cache values. To disable the cache you can call:
+
+```php
+Spatie\Once\Cache::disable();
+```
+
+You can re-enable the cache with
+
+```php
+Spatie\Once\Cache::enable();
+```
+
 ## Behind the curtains
 
 Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/0dbfc37/src/functions.php) to learn how all the magic works.

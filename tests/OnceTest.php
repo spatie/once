@@ -173,4 +173,47 @@ class OnceTest extends TestCase
             }
         }
     }
+
+    /** @test */
+    public function it_can_flush_the_entire_cache()
+    {
+        $testClass = new class() {
+            public function getNumber()
+            {
+                return once(function () {
+                    return random_int(1, 10000000);
+                });
+            }
+        };
+
+        $firstResult = $testClass->getNumber();
+
+        Cache::flush();
+
+        $this->assertNotEquals($firstResult, $testClass->getNumber());
+    }
+
+    /** @test */
+    public function it_can_enable_and_disable_the_cache()
+    {
+        $testClass = new class() {
+            public function getNumber()
+            {
+                return once(function () {
+                    return random_int(1, 10000000);
+                });
+            }
+        };
+
+        $this->assertTrue(Cache::isEnabled());
+        $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
+
+        Cache::disable();
+        $this->assertFalse(Cache::isEnabled());
+        $this->assertNotEquals($testClass->getNumber(), $testClass->getNumber());
+
+        Cache::enable();
+        $this->assertTrue(Cache::isEnabled());
+        $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
+    }
 }

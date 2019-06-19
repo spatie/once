@@ -7,6 +7,9 @@ class Cache
     /** @var array */
     public static $values = [];
 
+    /** @var bool */
+    protected static $enabled = true;
+
     /**
      * Determine if a value exists for a given object / hash.
      *
@@ -63,6 +66,14 @@ class Cache
         unset(static::$values[$objectHash]);
     }
 
+    /**
+     * Flush the entire cache
+     */
+    public static function flush()
+    {
+        static::$values = [];
+    }
+
     protected static function objectHash($object) : string
     {
         return is_string($object) ? $object : spl_object_hash($object);
@@ -81,5 +92,20 @@ class Cache
         }
 
         $object->$randomPropertyName = new Listener($object);
+    }
+
+    public static function disable()
+    {
+        static::$enabled = false;
+    }
+
+    public static function enable()
+    {
+        static::$enabled = true;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return static::$enabled;
     }
 }

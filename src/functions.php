@@ -11,7 +11,7 @@ function once($callback)
 
     $backtrace = new Backtrace($trace);
 
-    if($trace['function'] == 'eval') {
+    if ($trace['function'] == 'eval') {
         return call_user_func($callback);
     }
 

@@ -216,4 +216,12 @@ class OnceTest extends TestCase
         $this->assertTrue(Cache::isEnabled());
         $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
     }
+
+    /** @test */
+    public function it_will_not_throw_error_with_anonymous_functions()
+    {
+        $result = eval('return once( function () { return random_int(1, 1000); } ) ;');
+
+        $this->assertTrue(in_array($result, range(1, 1000)));
+    }
 }

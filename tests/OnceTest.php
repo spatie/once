@@ -218,7 +218,7 @@ class OnceTest extends TestCase
     }
 
     /** @test */
-    public function it_will_not_throw_error_with_anonymous_functions()
+    public function it_will_not_throw_error_with_eval()
     {
         $result = eval('return once( function () { return random_int(1, 1000); } ) ;');
 

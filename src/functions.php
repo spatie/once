@@ -11,6 +11,10 @@ function once($callback)
 
     $backtrace = new Backtrace($trace);
 
+    if ($trace['function'] === 'eval') {
+        return call_user_func($callback);
+    }
+
     $object = $backtrace->getObject();
 
     $hash = $backtrace->getHash();

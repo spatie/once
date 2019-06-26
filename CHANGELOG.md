@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.1.1 - 2019-06-27
+
+- do not throw an error when using `once` in `eval`
+
 ## 2.1.0 - 2019-06-19
 
 - add enabling/disable the cache

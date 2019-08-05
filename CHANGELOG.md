@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.1.2 - 2019-08-05
+
+- remove excess parameter in `get` on `cache`
+
 ## 2.1.1 - 2019-06-27
 
 - do not throw an error when using `once` in `eval`

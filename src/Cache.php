@@ -51,7 +51,7 @@ class Cache
      */
     public static function set($object, string $backtraceHash, $value)
     {
-        static::addDestroyListener($object, $backtraceHash);
+        static::addDestroyListener($object);
 
         static::$values[static::objectHash($object)][$backtraceHash] = $value;
     }

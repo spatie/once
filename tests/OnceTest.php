@@ -224,4 +224,57 @@ class OnceTest extends TestCase
 
         $this->assertTrue(in_array($result, range(1, 1000)));
     }
+
+    /** @test */
+    public function it_will_differentiate_between_closures()
+    {
+        $testClass = new class() {
+            public function getNumber()
+            {
+                $closure = function () {
+                    return once(function () {
+                        return random_int(1, 1000);
+                    });
+                };
+
+                return $closure();
+            }
+
+            public function secondNumber()
+            {
+                $closure = function () {
+                    return once(function () {
+                        return random_int(1001, 2000);
+                    });
+                };
+
+                return $closure();
+            }
+        };
+
+        $this->assertNotEquals($testClass->getNumber(), $testClass->secondNumber());
+    }
+
+    /** @test */
+    public function it_will_run_callback_once_for_closure_called_on_differemt_lines()
+    {
+        $testClass = new class() {
+            public function getNumbers()
+            {
+                $closure = function () {
+                    return once(function () {
+                        return random_int(1, 10000000);
+                    });
+                };
+
+                $numbers[] = $closure();
+                $numbers[] = $closure();
+
+                return $numbers;
+            }
+        };
+
+        $results = $testClass->getNumbers();
+        $this->assertEquals($results[0], $results[1]);
+    }
 }

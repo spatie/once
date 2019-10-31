@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.1.3 - 2019-10-31
+
+- differentiate between closures (#42)
+
 ## 2.1.2 - 2019-08-05
 
 - remove excess parameter in `get` on `cache`

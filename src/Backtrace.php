@@ -7,9 +7,13 @@ class Backtrace
     /** @var array */
     protected $trace;
 
+    /** @var array */
+    protected $zeroStack;
+
     public function __construct(array $trace)
     {
-        $this->trace = $trace;
+        $this->trace = $trace[1];
+        $this->zeroStack = $trace[0];
     }
 
     public function getArguments(): array
@@ -36,7 +40,12 @@ class Backtrace
             return is_object($argument) ? spl_object_hash($argument) : $argument;
         }, $this->getArguments());
 
-        return md5($this->getFunctionName().serialize($normalizedArguments));
+        $prefix = $this->getFunctionName();
+        if (strpos($prefix, '{closure}') !== false) {
+            $prefix = $this->zeroStack['line'];
+        }
+
+        return md5($prefix.serialize($normalizedArguments));
     }
 
     protected function staticCall()

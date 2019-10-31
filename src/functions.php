@@ -7,11 +7,11 @@ function once($callback)
 {
     $trace = debug_backtrace(
         DEBUG_BACKTRACE_PROVIDE_OBJECT, 2
-    )[1];
+    );
 
     $backtrace = new Backtrace($trace);
 
-    if ($trace['function'] === 'eval') {
+    if ($backtrace->getFunctionName() === 'eval') {
         return call_user_func($callback);
     }
 

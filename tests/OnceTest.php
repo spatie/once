@@ -277,4 +277,17 @@ class OnceTest extends TestCase
         $results = $testClass->getNumbers();
         $this->assertEquals($results[0], $results[1]);
     }
+
+    /** @test */
+    public function it_will_work_in_global_functions()
+    {
+        function globalFunction()
+        {
+            return once(function () {
+                return random_int(1, 10000000);
+            });
+        }
+
+        $this->assertEquals(globalFunction(), globalFunction());
+    }
 }

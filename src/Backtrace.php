@@ -31,6 +31,10 @@ class Backtrace
      */
     public function getObject()
     {
+        if ($this->globalFunction()) {
+            return $this->zeroStack['file'];
+        }
+
         return $this->staticCall() ? $this->trace['class'] : $this->trace['object'];
     }
 
@@ -51,5 +55,10 @@ class Backtrace
     protected function staticCall()
     {
         return $this->trace['type'] == '::';
+    }
+
+    protected function globalFunction()
+    {
+        return ! isset($this->trace['type']);
     }
 }

@@ -74,7 +74,7 @@ class Cache
         static::$values = [];
     }
 
-    protected static function objectHash($object) : string
+    protected static function objectHash($object): string
     {
         return is_string($object) ? $object : spl_object_hash($object);
     }

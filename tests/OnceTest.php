@@ -2,8 +2,8 @@
 
 namespace Spatie\Once\Test;
 
-use Spatie\Once\Cache;
 use PHPUnit\Framework\TestCase;
+use Spatie\Once\Cache;
 
 class OnceTest extends TestCase
 {

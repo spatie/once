@@ -1,7 +1,7 @@
 <?php
 
-use Spatie\Once\Cache;
 use Spatie\Once\Backtrace;
+use Spatie\Once\Cache;
 
 function once($callback)
 {

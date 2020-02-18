@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.2.0 - 2020-02-18
+
+- support global functions
+
 ## 2.1.3 - 2019-10-31
 
 - differentiate between closures (#42)

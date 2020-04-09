@@ -10,18 +10,17 @@
 This package contains a `once` function. You can pass a `callable` to it. Here's quick example:
 
 ```php
-class MyClass
-{
+$myClass = new class() {
     public function getNumber()
     {
         return once(function () {
             return rand(1, 10000);
         });
     }
-}
+};
 ```
 
-No matter how many times you run `(new MyClass())->getNumber()` inside the same request  you'll always get the same number.
+No matter how many times you run `$myClass->getNumber()` inside the same request  you'll always get the same number.
 
 Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
 
@@ -45,18 +44,17 @@ composer require spatie/once
 The `once` function accepts a `callable`.
 
 ```php
-class MyClass
-{
+$myClass = new class() {
     public function getNumber()
     {
         return once(function () {
             return rand(1, 10000);
         });
     }
-}
+};
 ```
 
-No matter how many times you run `(new MyClass())->getNumber()` you'll always get the same number.
+No matter how many times you run `$myClass->getNumber()` you'll always get the same number.
 
 The `once` function will only run once per combination of argument values the containing method receives.
 

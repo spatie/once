@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 2.2.1 - 2020-09-29
+
+- allow PHP 8
+
 ## 2.2.0 - 2020-02-18
 
 - support global functions

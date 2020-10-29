@@ -22,7 +22,6 @@
         "php": "^7.2"
     },
     "require-dev": {
-        "larapack/dd": "^1.1",
         "phpunit/phpunit": "^8.0"
     },
     "autoload": {

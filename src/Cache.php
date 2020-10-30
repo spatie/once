@@ -67,6 +67,20 @@ class Cache
     }
 
     /**
+     * Forget the stored items for the given object or class reference.
+     *
+     * @param $object
+     */
+    public static function forgetObject($object)
+    {
+        $objectHash = static::objectHash($object);
+
+        if (array_key_exists($objectHash, static::$values)) {
+            static::forget($objectHash);
+        }
+    }
+
+    /**
      * Flush the entire cache.
      */
     public static function flush()

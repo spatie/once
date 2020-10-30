@@ -76,6 +76,20 @@ class MyClass
 
 So calling `MyClass::getNumberForLetter('A')` will always return the same result, but calling `MyClass::getNumberForLetter('B')` will return something else.
 
+### Forget cache for object
+To flush the cache for static class methods or for an instance you can call:
+
+```php
+// Forget instance
+$object = new MyClass();
+$object->getNumber();
+Spatie\Once\Cache::forgetObject($object);
+
+// Forget static method cache passing class reference
+MyClass::getNumberForLetter('A');
+Spatie\Once\Cache::forgetObject(MyClass::class);
+```
+
 ### Flushing the cache
 
 To flush the entire cache you can call:

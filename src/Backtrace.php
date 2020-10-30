@@ -55,6 +55,6 @@ class Backtrace
 
     protected function globalFunction(): bool
     {
-        return ! isset($this->trace['type']);
+        return !isset($this->trace['type']);
     }
 }

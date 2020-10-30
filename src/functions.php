@@ -6,7 +6,8 @@ use Spatie\Once\Cache;
 function once(callable $callback): mixed
 {
     $trace = debug_backtrace(
-        DEBUG_BACKTRACE_PROVIDE_OBJECT, 2
+        DEBUG_BACKTRACE_PROVIDE_OBJECT,
+        2
     );
 
     $backtrace = new Backtrace($trace);
@@ -14,7 +15,6 @@ function once(callable $callback): mixed
     if ($backtrace->getFunctionName() === 'eval') {
         return call_user_func($callback);
     }
-
 
     $object = $backtrace->getObject();
 
@@ -26,14 +26,14 @@ function once(callable $callback): mixed
         $object = $cache;
     }
 
-    if (! $cache->isEnabled()) {
+    if (!$cache->isEnabled()) {
         return call_user_func($callback, $backtrace->getArguments());
     }
 
-    if (! $cache->has($object, $hash)) {
+    if (!$cache->has($object, $hash)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
-       $cache->set($object, $hash, $result);
+        $cache->set($object, $hash, $result);
     }
 
     return $cache->get($object, $hash);

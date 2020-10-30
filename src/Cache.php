@@ -2,110 +2,82 @@
 
 namespace Spatie\Once;
 
+use WeakMap;
+
 class Cache
 {
-    /** @var array */
-    public static $values = [];
+    protected static self $cache;
 
-    /** @var bool */
-    protected static $enabled = true;
+    protected WeakMap $values;
 
-    /**
-     * Determine if a value exists for a given object / hash.
-     *
-     * @param  mixed  $object
-     * @param  string  $backtraceHash
-     *
-     * @return bool
-     */
-    public static function has($object, string $backtraceHash): bool
+    protected bool $enabled = true;
+
+    public static function getInstance(): static
     {
-        $objectHash = static::objectHash($object);
+        if (! isset(static::$cache)) {
+            static::$cache = new static;
+        }
 
-        if (! isset(static::$values[$objectHash])) {
+        return static::$cache;
+    }
+
+    protected function __construct()
+    {
+        $this->values = new WeakMap();
+    }
+
+    public function has(object $object, string $backtraceHash): bool
+    {
+        if (! isset($this->values[$object])) {
+
             return false;
         }
 
-        return array_key_exists($backtraceHash, static::$values[$objectHash]);
+        return array_key_exists($backtraceHash, $this->values[$object]);
     }
 
-    /**
-     * Retrieve a value for an object / hash.
-     *
-     * @param  mixed  $object
-     * @param  string  $backtraceHash
-     *
-     * @return mixed
-     */
-    public static function get($object, string $backtraceHash)
+    public function get($object, string $backtraceHash): mixed
     {
-        return static::$values[static::objectHash($object)][$backtraceHash];
+        return $this->values[$object][$backtraceHash];
     }
 
-    /**
-     * Set a cached value for an object / hash.
-     *
-     * @param  mixed  $object
-     * @param  string  $backtraceHash
-     * @param  mixed  $value
-     */
-    public static function set($object, string $backtraceHash, $value)
+    public function set(object $object, string $backtraceHash, mixed $value): void
     {
-        static::addDestroyListener($object);
+        $cached = $this->values[$object] ?? [];
 
-        static::$values[static::objectHash($object)][$backtraceHash] = $value;
+        $cached[$backtraceHash] = $value;
+
+        $this->values[$object] = $cached;
     }
 
-    /**
-     * Forget the stored items for the given objectHash.
-     *
-     * @param string $objectHash
-     */
-    public static function forget(string $objectHash)
+    public function forget(object $object): void
     {
-        unset(static::$values[$objectHash]);
+        unset($this->values[$object]);
     }
 
-    /**
-     * Flush the entire cache.
-     */
-    public static function flush()
+    public function flush(): self
     {
-        static::$values = [];
+        $this->values = new WeakMap();
+
+        return $this;
     }
 
-    protected static function objectHash($object): string
+    public function enable(): self
     {
-        return is_string($object) ? $object : spl_object_hash($object);
+        $this->enabled = true;
+
+        return $this;
     }
 
-    protected static function addDestroyListener($object)
+    public function disable(): self
     {
-        if (is_string($object)) {
-            return;
-        }
+        $this->enabled = false;
 
-        $randomPropertyName = '___once_listener__'.rand(1, 1000000);
-
-        if (isset($object->$randomPropertyName)) {
-            return;
-        }
-
-        $object->$randomPropertyName = new Listener($object);
+        return $this;
     }
 
-    public static function disable()
+    public function isEnabled(): bool
     {
-        static::$enabled = false;
-    }
-
-    public static function enable()
-    {
-        static::$enabled = true;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return static::$enabled;
+        return $this->enabled;
     }
 }

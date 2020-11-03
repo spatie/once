@@ -7,6 +7,18 @@ use Spatie\Once\Cache;
 
 class OnceTest extends TestCase
 {
+    private Cache $cache;
+
+    public function setUp(): void
+    {
+        $this->cache = Cache::getInstance();
+
+        $this->cache->enable();
+        $this->cache->flush();
+
+        parent::setUp();
+    }
+
     /** @test */
     public function it_will_run_the_a_callback_without_arguments_only_once()
     {
@@ -107,28 +119,6 @@ class OnceTest extends TestCase
     }
 
     /** @test */
-    public function it_will_not_try_to_forget_something_in_the_cache_when_called_in_another_request()
-    {
-        $testClass = new TestClass();
-
-        $firstNumber = $testClass->getRandomNumber();
-
-        $objectHash = spl_object_hash($testClass);
-
-        $serialized = serialize($testClass);
-        unset($testClass);
-
-        $unserialized = unserialize($serialized);
-        $unserializedObjectHash = spl_object_hash($unserialized);
-
-        Cache::$values = [$unserializedObjectHash => ['abc' => 'dummy']];
-
-        unset($unserialized);
-
-        $this->assertArrayHasKey($unserializedObjectHash, Cache::$values);
-    }
-
-    /** @test */
     public function it_will_run_callback_once_on_static_method()
     {
         $object = new class() {
@@ -188,7 +178,7 @@ class OnceTest extends TestCase
 
         $firstResult = $testClass->getNumber();
 
-        Cache::flush();
+        Cache::getInstance()->flush();
 
         $this->assertNotEquals($firstResult, $testClass->getNumber());
     }
@@ -205,15 +195,15 @@ class OnceTest extends TestCase
             }
         };
 
-        $this->assertTrue(Cache::isEnabled());
+        $this->assertTrue($this->cache->isEnabled());
         $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
 
-        Cache::disable();
-        $this->assertFalse(Cache::isEnabled());
+        $this->cache->disable();
+        $this->assertFalse($this->cache->isEnabled());
         $this->assertNotEquals($testClass->getNumber(), $testClass->getNumber());
 
-        Cache::enable();
-        $this->assertTrue(Cache::isEnabled());
+        $this->cache->enable();
+        $this->assertTrue($this->cache->isEnabled());
         $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
     }
 

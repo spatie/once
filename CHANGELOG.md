@@ -2,6 +2,11 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.0.0 - 2020-11-04
+
+- refactor to use a `WeakMap`
+- drop support for PHP 7
+
 ## 2.2.1 - 2020-09-29
 
 - allow PHP 8

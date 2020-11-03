@@ -81,7 +81,7 @@ So calling `MyClass::getNumberForLetter('A')` will always return the same result
 To flush the entire cache you can call:
 
 ```php
-Spatie\Once\Cache::flush();
+Spatie\Once\Cache::getInstance()->flush();
 ```
 
 ### Disabling the cache
@@ -89,13 +89,13 @@ Spatie\Once\Cache::flush();
 In your test you probably don't want to cache values. To disable the cache you can call:
 
 ```php
-Spatie\Once\Cache::disable();
+Spatie\Once\Cache::getInstance()->disable();
 ```
 
 You can re-enable the cache with
 
 ```php
-Spatie\Once\Cache::enable();
+Spatie\Once\Cache::getInstance()->enable();
 ```
 
 ## Behind the curtains

@@ -100,11 +100,9 @@ Spatie\Once\Cache::getInstance()->enable();
 
 ## Behind the curtains
 
-Let's go over [the code of the `once` function](https://github.com/spatie/once/blob/0dbfc37/src/functions.php) to learn how all the magic works.
+The `once` function will execute the given callable and save the result in the  `$values` property of `Spatie\Once\Cache`. This class [is a singleton](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L15-L27). When we detect that `once` has already run before, we're just going to return the value stored inside [the `$values` weakmap](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L11) instead of executing the callable again.
 
-In short: it will execute the given callable and save the result in the static `$values` property of `Spatie\Once\Cache`. When we detect that `once` has already run before, we're just going to return the value stored inside the `$values` array instead of executing the callable again.
-
-The first thing it does is calling [`debug_backtrace`](http://php.net/manual/en/function.debug-backtrace.php). We'll use the output to determine in which function and class `once` is called and to get access to the `object` that function is running in. Yeah, we're already in voodoo-land. The output of the `debug_backtrace` is passed to a new instance of `Backtrace`. That class is just a simple wrapper so we can work more easily with the backtrace.
+The first thing it does is calling [`debug_backtrace`](http://php.net/manual/en/function.debug-backtrace.php). We'll use the output to determine in which function and class `once` is called and to get access to the `object` that function is running in. Yeah, we're already in voodoo-land. The output of the `debug_backtrace` is passed to a new instance of `Backtrace`. That class is just a simple wrapper, so we can work more easily with the backtrace.
 
 ```php
 $trace = debug_backtrace(
@@ -122,16 +120,18 @@ Next, we calculate a `hash` of the backtrace. This hash will be unique per funct
 $hash = $backtrace->getHash();
 ```
 
-Finally we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in `Spatie\Once\Cache`. In the other case just return the value from that cache (the `$callback` isn't executed).
+Finally, we will check if there's already a value stored for the given hash. If not, then execute the given `$callback` and store the result in the weakmap of `Spatie\Once\Cache`. In the other case, we just return the value from that cache (the `$callback` isn't executed).
 
 ```php
-if (! Cache::has($object, $hash)) {
-    $result = call_user_func($callback, $backtrace->getArguments());
+public function has(object $object, string $backtraceHash): bool
+{
+    if (! isset($this->values[$object])) {
 
-    Cache::set($object, $hash, $result);
+        return false;
+    }
+
+    return array_key_exists($backtraceHash, $this->values[$object]);
 }
-
-return Cache::get($object, $hash);
 ```
 
 ## Changelog

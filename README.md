@@ -11,7 +11,7 @@ This package contains a `once` function. You can pass a `callable` to it. Here's
 
 ```php
 $myClass = new class() {
-    public function getNumber()
+    public function getNumber(): int
     {
         return once(function () {
             return rand(1, 10000);
@@ -46,7 +46,7 @@ The `once` function accepts a `callable`.
 
 ```php
 $myClass = new class() {
-    public function getNumber()
+    public function getNumber(): int
     {
         return once(function () {
             return rand(1, 10000);

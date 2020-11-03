@@ -22,7 +22,9 @@ $myClass = new class() {
 
 No matter how many times you run `$myClass->getNumber()` inside the same request  you'll always get the same number.
 
-Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
+## Are you a visual learner?
+
+Under the hood, this package uses a PHP 8 Weakmap. [In this video](https://www.youtube.com/watch?v=-lFyHJqzfFU&list=PLjzBMxW2XGTwEwWumYBaFHy1z4W32TcjU&index=13), you'll see what a weakmap is, together with a nice demo of the package.
 
 ## Support us
 
@@ -98,7 +100,7 @@ You can re-enable the cache with
 Spatie\Once\Cache::getInstance()->enable();
 ```
 
-## Behind the curtains
+## Under the hood
 
 The `once` function will execute the given callable and save the result in the  `$values` property of `Spatie\Once\Cache`. This class [is a singleton](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L15-L27). When we detect that `once` has already run before, we're just going to return the value stored inside [the `$values` weakmap](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L11) instead of executing the callable again.
 

@@ -14,11 +14,7 @@ class Cache
 
     public static function getInstance(): static
     {
-        if (! isset(static::$cache)) {
-            static::$cache = new static;
-        }
-
-        return static::$cache;
+        return static::$cache ??= new static;
     }
 
     protected function __construct()

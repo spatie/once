@@ -9,7 +9,7 @@ class OnceTest extends TestCase
 {
     private Cache $cache;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->cache = Cache::getInstance();
 

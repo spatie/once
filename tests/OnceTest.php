@@ -42,25 +42,61 @@ class OnceTest extends TestCase
     }
 
     /** @test */
-    public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
+    public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_surrounding_method()
     {
         $testClass = new class() {
             public function getNumberForLetter($letter)
             {
-                return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
+                return once(function () {
+                    return rand(1, 10000000);
                 });
             }
         };
 
         foreach (range('A', 'Z') as $letter) {
             $firstResult = $testClass->getNumberForLetter($letter);
-            $this->assertStringStartsWith($letter, $firstResult);
 
             foreach (range(1, 100) as $i) {
                 $this->assertEquals($firstResult, $testClass->getNumberForLetter($letter));
             }
         }
+    }
+
+    /** @test */
+    public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
+    {
+        $testClass = new class() {
+            public function get()
+            {
+                $return = '';
+
+                foreach (range('A', 'Z') as $letter) {
+                    foreach (range(1, 10) as $i) {
+                        $return .= once(function () use ($letter) {
+                                return $letter . microtime(true);
+                            }) . PHP_EOL;
+                    }
+                }
+
+                return $return;
+            }
+        };
+
+        $grouped = array_chunk(
+            explode(PHP_EOL, trim($testClass->get())),
+            10
+        );
+
+        $this->assertCount(26, $grouped);
+        foreach($grouped as $lines) {
+            $this->assertCount(10, $lines);
+            $this->assertCount(1, array_unique($lines));
+        }
+
+        $this->assertCount(
+            26,
+            array_unique(array_map(fn(array $lines) => $lines[0], $grouped))
+        );
     }
 
     /** @test */
@@ -147,8 +183,8 @@ class OnceTest extends TestCase
         $object = new class() {
             public static function getNumberForLetter($letter)
             {
-                return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
+                return once(function () {
+                    return rand(1, 10000000);
                 });
             }
         };
@@ -156,7 +192,6 @@ class OnceTest extends TestCase
 
         foreach (range('A', 'Z') as $letter) {
             $firstResult = $class::getNumberForLetter($letter);
-            $this->assertStringStartsWith($letter, $firstResult);
 
             foreach (range(1, 100) as $i) {
                 $this->assertEquals($firstResult, $class::getNumberForLetter($letter));

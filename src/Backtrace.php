@@ -22,7 +22,13 @@ class Backtrace
 
     public function getFunctionName(): string
     {
-        return $this->trace['function'];
+        $function = $this->trace['function'];
+
+        if (str_contains($function, '{closure}')) {
+            $function .= '#'.$this->zeroStack['line'];
+        }
+
+        return $function;
     }
 
     public function getObject(): mixed
@@ -32,20 +38,6 @@ class Backtrace
         }
 
         return $this->staticCall() ? $this->trace['class'] : $this->trace['object'];
-    }
-
-    public function getHash(): string
-    {
-        $normalizedArguments = array_map(function ($argument) {
-            return is_object($argument) ? spl_object_hash($argument) : $argument;
-        }, $this->getArguments());
-
-        $prefix = $this->getFunctionName();
-        if (str_contains($prefix, '{closure}')) {
-            $prefix = $this->zeroStack['line'];
-        }
-
-        return md5($prefix.serialize($normalizedArguments));
     }
 
     protected function staticCall(): bool

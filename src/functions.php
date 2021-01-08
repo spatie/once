@@ -2,6 +2,7 @@
 
 use Spatie\Once\Backtrace;
 use Spatie\Once\Cache;
+use Spatie\Once\ReflectionCallable;
 
 function once(callable $callback): mixed
 {
@@ -15,10 +16,25 @@ function once(callable $callback): mixed
         return call_user_func($callback);
     }
 
+    $reflection = new ReflectionCallable($callback);
 
     $object = $backtrace->getObject();
 
-    $hash = $backtrace->getHash();
+    $normalizedArguments = $reflection->getNumberOfParameters()
+        ? array_map(
+            fn ($argument) => is_object($argument) ? spl_object_hash($argument) : $argument,
+            $backtrace->getArguments()
+        )
+        : null;
+
+    $normalizedStaticVariables = array_map(
+        fn ($staticVariable) => is_object($staticVariable) ? spl_object_hash($staticVariable) : $staticVariable,
+        $reflection->getStaticVariables()
+    );
+
+    $prefix = $backtrace->getFunctionName();
+
+    $hash = hash('sha256', $prefix.'|'.serialize($normalizedArguments).'|'.serialize($normalizedStaticVariables));
 
     $cache = Cache::getInstance();
 

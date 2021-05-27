@@ -5,7 +5,7 @@
         "spatie",
         "once",
         "callable",
-        "memozation",
+        "memoization",
         "cache"
     ],
     "homepage": "https://github.com/spatie/once",

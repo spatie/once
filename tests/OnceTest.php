@@ -280,4 +280,30 @@ class OnceTest extends TestCase
 
         $this->assertEquals(globalFunction(), globalFunction());
     }
+
+    /** @test */
+    public function it_will_works_with_two_static_functions_with_the_same_name()
+    {
+        $a = new class() {
+            public static function getName()
+            {
+                return once(function () {
+                    return 'A';
+                });
+            }
+        };
+        $b = new class() {
+            public static function getName()
+            {
+                return once(function () {
+                    return 'B';
+                });
+            }
+        };
+        $aClass = get_class($a);
+        $bClass = get_class($b);
+
+        $this->assertEquals('A', $aClass::getName());
+        $this->assertEquals('B', $bClass::getName());
+    }
 }

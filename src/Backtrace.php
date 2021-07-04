@@ -25,6 +25,11 @@ class Backtrace
         return $this->trace['function'];
     }
 
+    public function getObjectName(): ?string
+    {
+        return $this->trace['class'] ?? null;
+    }
+
     public function getObject(): mixed
     {
         if ($this->globalFunction()) {
@@ -40,7 +45,7 @@ class Backtrace
             return is_object($argument) ? spl_object_hash($argument) : $argument;
         }, $this->getArguments());
 
-        $prefix = $this->getFunctionName();
+        $prefix = $this->getObjectName() . $this->getFunctionName();
         if (str_contains($prefix, '{closure}')) {
             $prefix = $this->zeroStack['line'];
         }

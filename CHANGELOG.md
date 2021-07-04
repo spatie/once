@@ -2,6 +2,10 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.0.1 - 2021-07-04
+
+- fix for caching static functions of different classes with the same name (#62)
+
 ## 3.0.0 - 2020-11-04
 
 - refactor to use a `WeakMap`

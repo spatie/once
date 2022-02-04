@@ -3,6 +3,12 @@
 use Spatie\Once\Backtrace;
 use Spatie\Once\Cache;
 
+/**
+ * @template T
+ *
+ * @param callable(): T
+ * @return T
+ */
 function once(callable $callback): mixed
 {
     $trace = debug_backtrace(

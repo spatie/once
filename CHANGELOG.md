@@ -2,6 +2,14 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.0.2 - 2022-02-04
+
+## What's Changed
+
+- Add PHPStan doc blocks by @ThibaudDauce in https://github.com/spatie/once/pull/72
+
+**Full Changelog**: https://github.com/spatie/once/compare/3.0.1...3.0.2
+
 ## 3.0.1 - 2021-07-04
 
 - fix for caching static functions of different classes with the same name (#62)

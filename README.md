@@ -90,7 +90,7 @@ Spatie\Once\Cache::getInstance()->flush();
 
 ### Disabling the cache
 
-In your test you probably don't want to cache values. To disable the cache you can call:
+In your tests you probably don't want to cache values. To disable the cache you can call:
 
 ```php
 Spatie\Once\Cache::getInstance()->disable();

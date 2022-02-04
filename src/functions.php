@@ -6,7 +6,7 @@ use Spatie\Once\Cache;
 /**
  * @template T
  *
- * @param callable(): T
+ * @param (callable(): T) $callback
  * @return T
  */
 function once(callable $callback): mixed

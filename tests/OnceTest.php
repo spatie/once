@@ -2,308 +2,270 @@
 
 namespace Spatie\Once\Test;
 
-use PHPUnit\Framework\TestCase;
 use Spatie\Once\Cache;
 
-class OnceTest extends TestCase
-{
-    private Cache $cache;
+beforeEach(function () {
+    $this->cache = Cache::getInstance();
+    $this->cache->enable();
+    $this->cache->flush();
+});
 
-    protected function setUp(): void
-    {
-        $this->cache = Cache::getInstance();
+test('It will run the a callback without arguments only once', function () {
+    $testClass = new class() {
+        public function getNumber()
+        {
+            return once(function () {
+                return rand(1, 10000000);
+            });
+        }
+    };
 
-        $this->cache->enable();
-        $this->cache->flush();
+    $firstResult = $testClass->getNumber();
 
-        parent::setUp();
+    expect($firstResult)->toBeGreaterThanOrEqual(1);
+    expect($firstResult)->toBeLessThanOrEqual(10000000);
+
+    foreach (range(1, 100) as $i) {
+        expect($testClass->getNumber())->toBe($firstResult);
     }
+});
 
-    /** @test */
-    public function it_will_run_the_a_callback_without_arguments_only_once()
-    {
-        $testClass = new class() {
-            public function getNumber()
-            {
-                return once(function () {
-                    return rand(1, 10000000);
-                });
-            }
-        };
+test('It will run the given callback only once per variation arguments in use', function () {
+    $testClass = new class() {
+        public function getNumberForLetter($letter)
+        {
+            return once(function () use ($letter) {
+                return $letter.rand(1, 10000000);
+            });
+        }
+    };
 
-        $firstResult = $testClass->getNumber();
-
-        $this->assertGreaterThanOrEqual(1, $firstResult);
-        $this->assertLessThanOrEqual(10000000, $firstResult);
+    foreach (range('A', 'Z') as $letter) {
+        $firstResult = $testClass->getNumberForLetter($letter);
+        expect($firstResult)->toStartWith($letter);
 
         foreach (range(1, 100) as $i) {
-            $this->assertEquals($firstResult, $testClass->getNumber());
+            expect($testClass->getNumberForLetter($letter))->toBe($firstResult);
         }
     }
+});
 
-    /** @test */
-    public function it_will_run_the_given_callback_only_once_per_variation_arguments_in_use()
-    {
-        $testClass = new class() {
-            public function getNumberForLetter($letter)
-            {
-                return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
-                });
-            }
-        };
+test('It will run the given callback only once for falsy result', function () {
+    $testClass = new class() {
+        public $counter = 0;
 
-        foreach (range('A', 'Z') as $letter) {
-            $firstResult = $testClass->getNumberForLetter($letter);
-            $this->assertStringStartsWith($letter, $firstResult);
-
-            foreach (range(1, 100) as $i) {
-                $this->assertEquals($firstResult, $testClass->getNumberForLetter($letter));
-            }
+        public function getNull()
+        {
+            return once(function () {
+                $this->counter++;
+            });
         }
-    }
+    };
 
-    /** @test */
-    public function it_will_run_the_given_callback_only_once_for_falsy_result()
-    {
-        $testClass = new class() {
-            public $counter = 0;
+    expect($testClass->getNull())->toBeNull();
+    expect($testClass->getNull())->toBeNull();
+    expect($testClass->getNull())->toBeNull();
 
-            public function getNull()
-            {
-                return once(function () {
-                    $this->counter++;
-                });
-            }
-        };
+    expect($testClass->counter)->toBe(1);
+});
 
-        $this->assertNull($testClass->getNull());
-        $this->assertNull($testClass->getNull());
-        $this->assertNull($testClass->getNull());
+test('It will work properly with unset objects', function () {
+    $previousNumbers = [];
 
-        $this->assertEquals(1, $testClass->counter);
-    }
-
-    /** @test */
-    public function it_will_work_properly_with_unset_objects()
-    {
-        $previousNumbers = [];
-
-        foreach (range(1, 5) as $number) {
-            $testClass = new TestClass();
-
-            $number = $testClass->getRandomNumber();
-
-            $this->assertNotContains($number, $previousNumbers);
-
-            $previousNumbers[] = $number;
-
-            unset($testClass);
-        }
-    }
-
-    /** @test */
-    public function it_will_remember_the_memoized_value_when_serialized_when_called_in_the_same_request()
-    {
+    foreach (range(1, 5) as $number) {
         $testClass = new TestClass();
 
-        $firstNumber = $testClass->getRandomNumber();
+        $number = $testClass->getRandomNumber();
 
-        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
+        expect($previousNumbers)->not()->toContain($number);
 
-        $serialized = serialize($testClass);
-        $unserialized = unserialize($serialized);
-        unset($unserialized);
+        $previousNumbers[] = $number;
 
-        $this->assertEquals($firstNumber, $testClass->getRandomNumber());
+        unset($testClass);
     }
+});
 
-    /** @test */
-    public function it_will_run_callback_once_on_static_method()
-    {
-        $object = new class() {
-            public static function getNumber()
-            {
-                return once(function () {
-                    return rand(1, 10000000);
-                });
-            }
-        };
-        $class = get_class($object);
+test('It will remember the memoized value when serialized when called in the same request', function () {
+    $testClass = new TestClass();
 
-        $firstResult = $class::getNumber();
+    $firstNumber = $testClass->getRandomNumber();
 
-        $this->assertGreaterThanOrEqual(1, $firstResult);
-        $this->assertLessThanOrEqual(10000000, $firstResult);
+    expect($testClass->getRandomNumber())->toBe($firstNumber);
+
+    $serialized = serialize($testClass);
+    $unserialized = unserialize($serialized);
+    unset($unserialized);
+
+    expect($testClass->getRandomNumber())->toBe($firstNumber);
+});
+
+test('It will run callback once on static method', function () {
+    $object = new class() {
+        public static function getNumber()
+        {
+            return once(function () {
+                return rand(1, 10000000);
+            });
+        }
+    };
+    $class = get_class($object);
+
+    $firstResult = $class::getNumber();
+
+    expect($firstResult)->toBeGreaterThanOrEqual(1);
+    expect($firstResult)->toBeLessThanOrEqual(10000000);
+
+    foreach (range(1, 100) as $i) {
+        expect($class::getNumber())->toBe($firstResult);
+    }
+});
+
+test('It will run callback once on static method per variation arguments in use', function () {
+    $object = new class() {
+        public static function getNumberForLetter($letter)
+        {
+            return once(function () use ($letter) {
+                return $letter.rand(1, 10000000);
+            });
+        }
+    };
+    $class = get_class($object);
+
+    foreach (range('A', 'Z') as $letter) {
+        $firstResult = $class::getNumberForLetter($letter);
+        expect($firstResult)->toStartWith($letter);
 
         foreach (range(1, 100) as $i) {
-            $this->assertEquals($firstResult, $class::getNumber());
+            expect($class::getNumberForLetter($letter))->toBe($firstResult);
         }
     }
+});
 
-    /** @test */
-    public function it_will_run_callback_once_on_static_method_per_variation_arguments_in_use()
-    {
-        $object = new class() {
-            public static function getNumberForLetter($letter)
-            {
-                return once(function () use ($letter) {
-                    return $letter.rand(1, 10000000);
-                });
-            }
-        };
-        $class = get_class($object);
-
-        foreach (range('A', 'Z') as $letter) {
-            $firstResult = $class::getNumberForLetter($letter);
-            $this->assertStringStartsWith($letter, $firstResult);
-
-            foreach (range(1, 100) as $i) {
-                $this->assertEquals($firstResult, $class::getNumberForLetter($letter));
-            }
-        }
-    }
-
-    /** @test */
-    public function it_can_flush_the_entire_cache()
-    {
-        $testClass = new class() {
-            public function getNumber()
-            {
-                return once(function () {
-                    return random_int(1, 10000000);
-                });
-            }
-        };
-
-        $firstResult = $testClass->getNumber();
-
-        Cache::getInstance()->flush();
-
-        $this->assertNotEquals($firstResult, $testClass->getNumber());
-    }
-
-    /** @test */
-    public function it_can_enable_and_disable_the_cache()
-    {
-        $testClass = new class() {
-            public function getNumber()
-            {
-                return once(function () {
-                    return random_int(1, 10000000);
-                });
-            }
-        };
-
-        $this->assertTrue($this->cache->isEnabled());
-        $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
-
-        $this->cache->disable();
-        $this->assertFalse($this->cache->isEnabled());
-        $this->assertNotEquals($testClass->getNumber(), $testClass->getNumber());
-
-        $this->cache->enable();
-        $this->assertTrue($this->cache->isEnabled());
-        $this->assertEquals($testClass->getNumber(), $testClass->getNumber());
-    }
-
-    /** @test */
-    public function it_will_not_throw_error_with_eval()
-    {
-        $result = eval('return once( function () { return random_int(1, 1000); } ) ;');
-
-        $this->assertTrue(in_array($result, range(1, 1000)));
-    }
-
-    /** @test */
-    public function it_will_differentiate_between_closures()
-    {
-        $testClass = new class() {
-            public function getNumber()
-            {
-                $closure = function () {
-                    return once(function () {
-                        return random_int(1, 1000);
-                    });
-                };
-
-                return $closure();
-            }
-
-            public function secondNumber()
-            {
-                $closure = function () {
-                    return once(function () {
-                        return random_int(1001, 2000);
-                    });
-                };
-
-                return $closure();
-            }
-        };
-
-        $this->assertNotEquals($testClass->getNumber(), $testClass->secondNumber());
-    }
-
-    /** @test */
-    public function it_will_run_callback_once_for_closure_called_on_differemt_lines()
-    {
-        $testClass = new class() {
-            public function getNumbers()
-            {
-                $closure = function () {
-                    return once(function () {
-                        return random_int(1, 10000000);
-                    });
-                };
-
-                $numbers[] = $closure();
-                $numbers[] = $closure();
-
-                return $numbers;
-            }
-        };
-
-        $results = $testClass->getNumbers();
-        $this->assertEquals($results[0], $results[1]);
-    }
-
-    /** @test */
-    public function it_will_work_in_global_functions()
-    {
-        function globalFunction()
+test('It can flush the entire cache', function () {
+    $testClass = new class() {
+        public function getNumber()
         {
             return once(function () {
                 return random_int(1, 10000000);
             });
         }
+    };
 
-        $this->assertEquals(globalFunction(), globalFunction());
-    }
+    $firstResult = $testClass->getNumber();
 
-    /** @test */
-    public function it_will_works_with_two_static_functions_with_the_same_name()
+    Cache::getInstance()->flush();
+
+    expect($testClass->getNumber())->not()->toBe($firstResult);
+});
+
+test('It can enable and disable the cache', function () {
+    $testClass = new class() {
+        public function getNumber()
+        {
+            return once(function () {
+                return random_int(1, 10000000);
+            });
+        }
+    };
+
+    expect($this->cache->isEnabled())->toBeTrue();
+    expect($testClass->getNumber())->toBe($testClass->getNumber());
+
+    $this->cache->disable();
+    expect($this->cache->isEnabled())->toBeFalse();
+    expect($testClass->getNumber())->not()->toBe($testClass->getNumber());
+
+    $this->cache->enable();
+    expect($this->cache->isEnabled())->toBeTrue();
+    expect($testClass->getNumber())->toBe($testClass->getNumber());
+});
+
+test('It will not throw error with eval', function () {
+    $result = eval('return once( function () { return random_int(1, 1000); } ) ;');
+
+    expect(in_array($result, range(1, 1000)))->toBeTrue();
+});
+
+test('It will differentiate between closures', function () {
+    $testClass = new class() {
+        public function getNumber()
+        {
+            $closure = function () {
+                return once(function () {
+                    return random_int(1, 1000);
+                });
+            };
+
+            return $closure();
+        }
+
+        public function secondNumber()
+        {
+            $closure = function () {
+                return once(function () {
+                    return random_int(1001, 2000);
+                });
+            };
+
+            return $closure();
+        }
+    };
+
+    expect($testClass->secondNumber())->not()->toBe($testClass->getNumber());
+});
+
+test('It will run callback once for closure called on differemt lines', function () {
+    $testClass = new class() {
+        public function getNumbers()
+        {
+            $closure = function () {
+                return once(function () {
+                    return random_int(1, 10000000);
+                });
+            };
+
+            $numbers[] = $closure();
+            $numbers[] = $closure();
+
+            return $numbers;
+        }
+    };
+
+    $results = $testClass->getNumbers();
+    expect($results[1])->toBe($results[0]);
+});
+
+test('It will work in global functions', function () {
+    function globalFunction()
     {
-        $a = new class() {
-            public static function getName()
-            {
-                return once(function () {
-                    return 'A';
-                });
-            }
-        };
-        $b = new class() {
-            public static function getName()
-            {
-                return once(function () {
-                    return 'B';
-                });
-            }
-        };
-        $aClass = get_class($a);
-        $bClass = get_class($b);
-
-        $this->assertEquals('A', $aClass::getName());
-        $this->assertEquals('B', $bClass::getName());
+        return once(function () {
+            return random_int(1, 10000000);
+        });
     }
-}
+
+    expect(globalFunction())->toBe(globalFunction());
+});
+
+test('It will work with two static functions with the same name', function () {
+    $a = new class() {
+        public static function getName()
+        {
+            return once(function () {
+                return 'A';
+            });
+        }
+    };
+    $b = new class() {
+        public static function getName()
+        {
+            return once(function () {
+                return 'B';
+            });
+        }
+    };
+    $aClass = get_class($a);
+    $bClass = get_class($b);
+
+    expect($aClass::getName())->toBe('A');
+    expect($bClass::getName())->toBe('B');
+});

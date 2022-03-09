@@ -22,7 +22,7 @@
         "php": "^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.3",
+        "pestphp/pest": "^1.21",
         "symfony/var-dumper": "^5.1"
     },
     "autoload": {
@@ -39,7 +39,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/pest"
     },
     "config": {
         "sort-packages": true

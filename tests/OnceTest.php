@@ -10,7 +10,7 @@ beforeEach(function () {
     $this->cache->flush();
 });
 
-test('It will run the a callback without arguments only once', function () {
+it('will run the a callback without arguments only once', function () {
     $testClass = new class() {
         public function getNumber()
         {
@@ -30,7 +30,7 @@ test('It will run the a callback without arguments only once', function () {
     }
 });
 
-test('It will run the given callback only once per variation arguments in use', function () {
+it('will run the given callback only once per variation arguments in use', function () {
     $testClass = new class() {
         public function getNumberForLetter($letter)
         {
@@ -50,7 +50,7 @@ test('It will run the given callback only once per variation arguments in use', 
     }
 });
 
-test('It will run the given callback only once for falsy result', function () {
+it('will run the given callback only once for falsy result', function () {
     $testClass = new class() {
         public $counter = 0;
 
@@ -69,7 +69,7 @@ test('It will run the given callback only once for falsy result', function () {
     expect($testClass->counter)->toBe(1);
 });
 
-test('It will work properly with unset objects', function () {
+it('will work properly with unset objects', function () {
     $previousNumbers = [];
 
     foreach (range(1, 5) as $number) {
@@ -85,7 +85,7 @@ test('It will work properly with unset objects', function () {
     }
 });
 
-test('It will remember the memoized value when serialized when called in the same request', function () {
+it('will remember the memoized value when serialized when called in the same request', function () {
     $testClass = new TestClass();
 
     $firstNumber = $testClass->getRandomNumber();
@@ -99,7 +99,7 @@ test('It will remember the memoized value when serialized when called in the sam
     expect($testClass->getRandomNumber())->toBe($firstNumber);
 });
 
-test('It will run callback once on static method', function () {
+it('will run callback once on static method', function () {
     $object = new class() {
         public static function getNumber()
         {
@@ -120,7 +120,7 @@ test('It will run callback once on static method', function () {
     }
 });
 
-test('It will run callback once on static method per variation arguments in use', function () {
+it('will run callback once on static method per variation arguments in use', function () {
     $object = new class() {
         public static function getNumberForLetter($letter)
         {
@@ -141,7 +141,7 @@ test('It will run callback once on static method per variation arguments in use'
     }
 });
 
-test('It can flush the entire cache', function () {
+it('can flush the entire cache', function () {
     $testClass = new class() {
         public function getNumber()
         {
@@ -158,7 +158,7 @@ test('It can flush the entire cache', function () {
     expect($testClass->getNumber())->not()->toBe($firstResult);
 });
 
-test('It can enable and disable the cache', function () {
+it('can enable and disable the cache', function () {
     $testClass = new class() {
         public function getNumber()
         {
@@ -180,13 +180,13 @@ test('It can enable and disable the cache', function () {
     expect($testClass->getNumber())->toBe($testClass->getNumber());
 });
 
-test('It will not throw error with eval', function () {
+it('will not throw error with eval', function () {
     $result = eval('return once( function () { return random_int(1, 1000); } ) ;');
 
     expect(in_array($result, range(1, 1000)))->toBeTrue();
 });
 
-test('It will differentiate between closures', function () {
+it('will differentiate between closures', function () {
     $testClass = new class() {
         public function getNumber()
         {
@@ -214,7 +214,7 @@ test('It will differentiate between closures', function () {
     expect($testClass->secondNumber())->not()->toBe($testClass->getNumber());
 });
 
-test('It will run callback once for closure called on differemt lines', function () {
+it('will run callback once for closure called on differemt lines', function () {
     $testClass = new class() {
         public function getNumbers()
         {
@@ -235,7 +235,7 @@ test('It will run callback once for closure called on differemt lines', function
     expect($results[1])->toBe($results[0]);
 });
 
-test('It will work in global functions', function () {
+it('will work in global functions', function () {
     function globalFunction()
     {
         return once(function () {
@@ -246,7 +246,7 @@ test('It will work in global functions', function () {
     expect(globalFunction())->toBe(globalFunction());
 });
 
-test('It will work with two static functions with the same name', function () {
+it('will work with two static functions with the same name', function () {
     $a = new class() {
         public static function getName()
         {
@@ -255,6 +255,7 @@ test('It will work with two static functions with the same name', function () {
             });
         }
     };
+
     $b = new class() {
         public static function getName()
         {
@@ -263,9 +264,22 @@ test('It will work with two static functions with the same name', function () {
             });
         }
     };
+
     $aClass = get_class($a);
     $bClass = get_class($b);
 
     expect($aClass::getName())->toBe('A');
     expect($bClass::getName())->toBe('B');
+});
+
+it('can count the items in the cache', function() {
+    expect($this->cache->count())->toBe(0);
+
+    $testClass = (new TestClass());
+    $testClass->getRandomNumber();
+    expect($this->cache->count())->toBe(1);
+
+    $anotherTestClass = (new TestClass());
+    $anotherTestClass->getRandomNumber();
+    expect($this->cache->count())->toBe(2);
 });

@@ -2,13 +2,14 @@
 
 namespace Spatie\Once;
 
+use Countable;
 use WeakMap;
 
-class Cache
+class Cache implements Countable
 {
     protected static self $cache;
 
-    protected WeakMap $values;
+    public WeakMap $values;
 
     protected bool $enabled = true;
 
@@ -75,5 +76,10 @@ class Cache
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function count(): int
+    {
+        return count($this->values);
     }
 }

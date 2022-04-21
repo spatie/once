@@ -4,8 +4,7 @@ namespace Spatie\Once\Test;
 
 class TestClass
 {
-    /** @var int */
-    protected $randomNumber;
+    protected int $randomNumber;
 
     public function __construct()
     {

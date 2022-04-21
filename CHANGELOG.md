@@ -2,6 +2,18 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.1.0 - 2022-04-21
+
+## What's Changed
+
+- Rewrite phpunit tests to pest by @otsch in https://github.com/spatie/once/pull/73
+
+## New Contributors
+
+- @otsch made their first contribution in https://github.com/spatie/once/pull/73
+
+**Full Changelog**: https://github.com/spatie/once/compare/3.0.2...3.1.0
+
 ## 3.0.2 - 2022-02-04
 
 ## What's Changed

@@ -19,7 +19,7 @@ $myClass = new class() {
     public function getNumber(): int
     {
         return once(function () {
-            return rand(1, 10000);
+            return random_int(1, 10000);
         });
     }
 };
@@ -56,7 +56,7 @@ $myClass = new class() {
     public function getNumber(): int
     {
         return once(function () {
-            return rand(1, 10000);
+            return random_int(1, 10000);
         });
     }
 };
@@ -75,7 +75,7 @@ class MyClass
     public static function getNumberForLetter($letter)
     {
         return once(function () use ($letter) {
-            return $letter . rand(1, 10000000);
+            return $letter . random_int(1, 10000000);
         });
     }
 }

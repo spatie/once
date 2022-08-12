@@ -21,7 +21,6 @@ function once(callable $callback): mixed
         return call_user_func($callback);
     }
 
-
     $object = $backtrace->getObject();
 
     $hash = $backtrace->getHash();

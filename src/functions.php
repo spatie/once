@@ -21,7 +21,6 @@ function once(callable $callback): mixed
         return call_user_func($callback);
     }
 
-
     $object = $backtrace->getObject();
 
     $hash = $backtrace->getHash();
@@ -39,7 +38,7 @@ function once(callable $callback): mixed
     if (! $cache->has($object, $hash)) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
-       $cache->set($object, $hash, $result);
+        $cache->set($object, $hash, $result);
     }
 
     return $cache->get($object, $hash);

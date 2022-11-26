@@ -11,7 +11,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                php: [8.1, 8.0]
+                php: [8.0, 8.1, 8.2]
                 dependency-version: [prefer-lowest, prefer-stable]
                 os: [ubuntu-latest, windows-latest]
 
@@ -27,6 +27,9 @@ jobs:
                   php-version: ${{ matrix.php }}
                   extensions: json, dom, curl, libxml, mbstring
                   coverage: none
+
+            - name: Allow Pest Composer plugin
+              run: composer config --no-plugins allow-plugins.pestphp/pest-plugin true
 
             - name: Install dependencies
               run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest

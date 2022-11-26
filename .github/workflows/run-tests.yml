@@ -28,6 +28,9 @@ jobs:
                   extensions: json, dom, curl, libxml, mbstring
                   coverage: none
 
+            - name: Allow Pest Composer plugin
+              run: composer config --no-plugins allow-plugins.pestphp/pest-plugin true
+
             - name: Install dependencies
               run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-suggest
 

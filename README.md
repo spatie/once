@@ -105,6 +105,42 @@ You can re-enable the cache with
 Spatie\Once\Cache::getInstance()->enable();
 ```
 
+### Octane compatibility
+
+> **Warning**
+> 
+> This behaviour is in beta and needs to be tested by the community. You can find this topic [in discussion #79](https://github.com/spatie/once/discussions/79).
+
+In order to have `once` working properly in an Octane environment, `Cache::getInstance()->flush()` must be called when `OperationTerminated` event is triggered. You can configure it in `config/octane.php` file:
+
+```php
+// config/octane.php
+
+OperationTerminated::class => [
+    FlushTemporaryContainerInstances::class,
+    // DisconnectFromDatabases::class,
+    // CollectGarbage::class,
+
+    FlushSpatieOnce::class, // we should create this class we have added here
+],
+```
+
+And create the `FlushSpatieOnce:class`:
+
+```php
+// app/Listeners/FlushSpatieOnce.php
+
+use Spatie\Once\Cache;
+
+class FlushSpatieOnce
+{
+    public function handle($event)
+    {
+        Cache::getInstance()->flush();
+    }
+}
+```
+
 ## Under the hood
 
 The `once` function will execute the given callable and save the result in the  `$values` property of `Spatie\Once\Cache`. This class [is a singleton](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L15-L27). When we detect that `once` has already run before, we're just going to return the value stored inside [the `$values` weakmap](https://github.com/spatie/once/blob/9decd70a76664ff451fb10f65ac360290a6a50e6/src/Cache.php#L11) instead of executing the callable again.

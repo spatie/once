@@ -5,7 +5,7 @@ namespace Spatie\Once;
 use Countable;
 use WeakMap;
 
-class Cache implements Countable
+final class Cache implements Countable
 {
     protected static self $cache;
 

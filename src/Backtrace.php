@@ -2,7 +2,7 @@
 
 namespace Spatie\Once;
 
-class Backtrace
+final class Backtrace
 {
     protected array $trace;
 

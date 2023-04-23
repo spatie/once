@@ -3,13 +3,24 @@
 declare(strict_types=1);
 
 namespace Spatie\Once;
-
+/**
+ * @template Trace of array{function: string, line?: int, file?: string, class?: class-string, type?: "->"|"::", args?: array, object?: object}
+ */
 final class Backtrace
 {
+    /**
+     * @var Trace
+     */
     protected array $trace;
 
+    /**
+     * @var Trace
+     */
     protected array $zeroStack;
 
+    /**
+     * @param array<int, Trace> $trace
+     */
     public function __construct(array $trace)
     {
         $this->trace = $trace[1];
@@ -17,6 +28,9 @@ final class Backtrace
         $this->zeroStack = $trace[0];
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getArguments(): array
     {
         return $this->trace['args'];
@@ -32,13 +46,18 @@ final class Backtrace
         return $this->trace['class'] ?? null;
     }
 
+    /**
+     * @return string|object
+     */
     public function getObject(): mixed
     {
         if ($this->globalFunction()) {
             return $this->zeroStack['file'];
         }
-
-        return $this->staticCall() ? $this->trace['class'] : $this->trace['object'];
+        if ($this->staticCall()) {
+            return $this->trace['class'];
+        }
+        return $this->trace['object'];
     }
 
     public function getHash(): string

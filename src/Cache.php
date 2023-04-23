@@ -11,11 +11,14 @@ final class Cache implements Countable
 {
     protected static self $cache;
 
+    /**
+     * @var WeakMap<object, array<string, mixed>>
+     */
     public WeakMap $values;
 
     protected bool $enabled = true;
 
-    public static function getInstance(): static
+    public static function getInstance(): self
     {
         return static::$cache ??= new static;
     }
@@ -35,7 +38,7 @@ final class Cache implements Countable
         return array_key_exists($backtraceHash, $this->values[$object]);
     }
 
-    public function get($object, string $backtraceHash): mixed
+    public function get(object $object, string $backtraceHash): mixed
     {
         return $this->values[$object][$backtraceHash];
     }

@@ -46,7 +46,7 @@ class Backtrace
         }, $this->getArguments());
 
         $prefix = $this->getObjectName() . $this->getFunctionName();
-        if (str_contains($prefix, '{closure}')) {
+        if (str_contains($prefix, '{closure')) {
             $prefix = $this->zeroStack['line'];
         }
 

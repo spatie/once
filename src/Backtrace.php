@@ -10,9 +10,9 @@ class Backtrace
 
     public function __construct(array $trace)
     {
-        $this->trace = $trace[1];
+        $this->trace = $trace[2];
 
-        $this->zeroStack = $trace[0];
+        $this->zeroStack = $trace[1];
     }
 
     public function getArguments(): array

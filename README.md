@@ -24,6 +24,26 @@ $myClass = new class() {
 
 No matter how many times you run `$myClass->getNumber()` inside the same request  you'll always get the same number.
 
+However, if you want to reuse the result only if a given condition is `true`, you can use `onceIf()`, passing as first parameter a `bool` expression or a `callable`:
+
+```php
+$myClass = new class() {
+    public function getSameNumber(): int
+    {
+        return onceIf(fn() => true, function () {
+            return rand(1, 10000);
+        });
+    }
+    
+    public function getDifferentNumber(): int
+    {
+        return onceIf(fn() => false, function () {
+            return rand(1, 10000);
+        });
+    }
+};
+```
+
 ## Are you a visual learner?
 
 Under the hood, this package uses a PHP 8 Weakmap. [In this video](https://www.youtube.com/watch?v=-lFyHJqzfFU&list=PLjzBMxW2XGTwEwWumYBaFHy1z4W32TcjU&index=13), you'll see what a weakmap is, together with a nice demo of the package.

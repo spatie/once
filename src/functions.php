@@ -11,8 +11,32 @@ use Spatie\Once\Cache;
  */
 function once(callable $callback): mixed
 {
+    return onceGenerics(true, $callback);
+}
+
+/**
+ * @template T
+ *
+ * @param (callable(): T)|bool $callback
+ * @param (callable(): T) $callback
+ * @return T
+ */
+function onceIf(callable|bool $condition, callable $callback): mixed
+{
+    return onceGenerics($condition, $callback);
+}
+
+/**
+ * @template T
+ *
+ * @param (callable(): T)|bool $callback
+ * @param (callable(): T) $callback
+ * @return T
+ */
+function onceGenerics(callable|bool  $condition, callable $callback): mixed
+{
     $trace = debug_backtrace(
-        DEBUG_BACKTRACE_PROVIDE_OBJECT, 2
+        DEBUG_BACKTRACE_PROVIDE_OBJECT, 3
     );
 
     $backtrace = new Backtrace($trace);
@@ -35,7 +59,9 @@ function once(callable $callback): mixed
         return call_user_func($callback, $backtrace->getArguments());
     }
 
-    if (! $cache->has($object, $hash)) {
+    $condition = is_callable($condition) ? $condition() : $condition;
+
+    if (! $cache->has($object, $hash) || ! $condition) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
         $cache->set($object, $hash, $result);

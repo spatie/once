@@ -42,7 +42,7 @@ class Backtrace
     public function getHash(): string
     {
         $normalizedArguments = array_map(function ($argument) {
-            return is_object($argument) ? spl_object_hash($argument) : $argument;
+            return is_object($argument) ? (spl_object_hash($argument) . serialize($argument)) : $argument;
         }, $this->getArguments());
 
         $prefix = $this->getObjectName() . $this->getFunctionName();

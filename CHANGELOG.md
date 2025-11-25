@@ -2,6 +2,27 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.1.2 - 2025-11-25
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 1.6.0 to 2.1.0 by @dependabot[bot] in https://github.com/spatie/once/pull/97
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot[bot] in https://github.com/spatie/once/pull/102
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot[bot] in https://github.com/spatie/once/pull/103
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/spatie/once/pull/104
+* Update issue template by @AlexVanderbist in https://github.com/spatie/once/pull/107
+* Bump stefanzweifel/git-auto-commit-action from 4 to 7 by @dependabot[bot] in https://github.com/spatie/once/pull/108
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/spatie/once/pull/106
+* Added Symfony 8 support to all symfony/* packages. by @thecaliskan in https://github.com/spatie/once/pull/110
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/spatie/once/pull/111
+
+### New Contributors
+
+* @AlexVanderbist made their first contribution in https://github.com/spatie/once/pull/107
+* @thecaliskan made their first contribution in https://github.com/spatie/once/pull/110
+
+**Full Changelog**: https://github.com/spatie/once/compare/3.1.1...3.1.2
+
 ## 3.1.1 - 2024-05-27
 
 ### What's Changed

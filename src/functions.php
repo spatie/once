@@ -35,11 +35,15 @@ function once(callable $callback): mixed
         return call_user_func($callback, $backtrace->getArguments());
     }
 
-    if (! $cache->has($object, $hash)) {
+    $item = $cache->get($object, $hash);
+
+    if (! $item) {
         $result = call_user_func($callback, $backtrace->getArguments());
 
         $cache->set($object, $hash, $result);
+
+        return $result;
     }
 
-    return $cache->get($object, $hash);
+    return $item;
 }

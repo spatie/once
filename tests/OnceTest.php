@@ -69,6 +69,39 @@ it('will run the given callback only once for falsy result', function () {
     expect($testClass->counter)->toBe(1);
 });
 
+it('will memoize falsey return values and run the callback only once', function ($value) {
+    $testClass = new class() {
+        public $counter = 0;
+
+        public $value;
+
+        public function getValue()
+        {
+            return once(function () {
+                $this->counter++;
+
+                return $this->value;
+            });
+        }
+    };
+
+    $testClass->value = $value;
+
+    expect($testClass->getValue())->toBe($value);
+    expect($testClass->getValue())->toBe($value);
+    expect($testClass->getValue())->toBe($value);
+
+    expect($testClass->counter)->toBe(1);
+})->with([
+    'null' => [null],
+    'false' => [false],
+    'zero' => [0],
+    'zero float' => [0.0],
+    'empty string' => [''],
+    'string zero' => ['0'],
+    'empty array' => [[]],
+]);
+
 it('will work properly with unset objects', function () {
     $previousNumbers = [];
 

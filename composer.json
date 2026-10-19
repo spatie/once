@@ -19,10 +19,10 @@
         }
     ],
     "require": {
-        "php": "^8.0"
+        "php": "^8.2"
     },
     "require-dev": {
-        "pestphp/pest": "^1.21",
+        "pestphp/pest": "^3.8|^4.0|^5.0",
         "symfony/var-dumper": "^5.1|^6.0|^7.0|^8.0"
     },
     "autoload": {
@@ -42,6 +42,9 @@
         "test": "vendor/bin/pest"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
   }
 }

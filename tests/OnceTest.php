@@ -69,15 +69,15 @@ it('will run the given callback only once for falsy result', function () {
     expect($testClass->counter)->toBe(1);
 });
 
-it('will memoize falsey return values and run the callback only once', function ($value) {
+it('will memoize falsey return values and run the callback only once', function (mixed $value): void {
     $testClass = new class() {
-        public $counter = 0;
+        public int $counter = 0;
 
-        public $value;
+        public mixed $value;
 
-        public function getValue()
+        public function getValue(): mixed
         {
-            return once(function () {
+            return once(function (): mixed {
                 $this->counter++;
 
                 return $this->value;

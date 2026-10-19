@@ -2,6 +2,22 @@
 
 All notable changes to `once` will be documented in this file
 
+## 3.1.3 - 2026-10-19
+
+### Regression coverage
+
+- Protect memoization of falsey return values (`null`, `false`, `0`, `0.0`, `""`, `"0"`, and `[]`), including strict return types and exactly one callback execution (#117).
+
+### Tooling and compatibility
+
+- Require PHP 8.2 or newer, dropping end-of-life PHP 8.0 and 8.1.
+- Test PHP 8.2–8.5 on Linux and Windows with compatible Pest 3, 4, and 5 releases.
+- Modernize PHPUnit configuration, Composer plugin setup, and GitHub Actions tooling.
+
+This patch release contains test and tooling changes; production memoization behavior is unchanged.
+
+**Full Changelog**: https://github.com/spatie/once/compare/3.1.2...3.1.3
+
 ## 3.1.2 - 2025-11-25
 
 ### What's Changed

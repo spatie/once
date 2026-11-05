@@ -11,7 +11,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                php: ['8.2', '8.3', '8.4', '8.5']
+                php: ['8.2', '8.3', '8.4', '8.5', '8.6']
                 dependency-version: [prefer-lowest, prefer-stable]
                 os: [ubuntu-latest, windows-latest]
 
@@ -27,6 +27,10 @@ jobs:
                   php-version: ${{ matrix.php }}
                   extensions: json, dom, curl, libxml, mbstring
                   coverage: none
+
+            - name: Verify PHP version
+              run: |
+                  php -r "echo PHP_VERSION, PHP_EOL; exit(PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION === '${{ matrix.php }}' ? 0 : 1);"
 
             - name: Install dependencies
               run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
